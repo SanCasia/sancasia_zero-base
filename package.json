@@ -1,0 +1,27 @@
+{
+  "name": "sancasia_zero-base",
+  "version": "0.0.0",
+  "description": "This is the base package of the SanCasia Zero engine",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SanCasia/sancasia_zero-base.git"
+  },
+  "keywords": [
+    "game-engine",
+    "game-engine-base",
+    "sancasia",
+    "sancasia-zero"
+  ],
+  "author": "Simon Kindhauser",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/SanCasia/sancasia_zero-base/issues"
+  },
+  "homepage": "https://github.com/SanCasia/sancasia_zero-base#readme",
+  "dependencies": {
+    "sancasia_zero-core": "^1.1.0"
+  }
+}
