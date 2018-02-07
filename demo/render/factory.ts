@@ -7,42 +7,51 @@ namespace sczBase.demo.render
   {
     public static create(
       id: number,
-      src: string,
-      size: {x: number, y: number},
       position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
-      center: {x: number, y: number} = {x: 0, y: 0},
-      factor: {x: number, y: number} = {x: 1, y: 1},
-      rotation: number = 0,
+      size: {x: number, y: number} = {x: 1, y: 1},
       parentId: number = -1
     ) : sczCore.Entity
     {
+      // create a new empty entity
       let part = new sczCore.Entity(id);
+
+      // initialize translate component
       let translate = new TranslateComponent();
 
+      // coordinates
       translate.positionX = position.x;
       translate.positionY = position.y;
       translate.positionZ = position.z;
 
-      translate.centerX = center.x;
-      translate.centerY = center.y;
+      // center
+      translate.centerX = 50;
+      translate.centerY = 50;
 
-      translate.rotation = rotation;
+      // rotation
+      translate.rotation = 0;
 
-      translate.sizeX = factor.x;
-      translate.sizeY = factor.y;
+      // size
+      translate.sizeX = size.x;
+      translate.sizeY = size.y;
 
+      // parent
       translate.parentId = parentId;
 
+      // add component to entity
       part.addComponent(translate);
 
-
+      // initialize sprite component
       let sprite = new SpriteComponent();
+
+      // image
       sprite.sprite = new Image();
-      sprite.sprite.src = src;
+      sprite.sprite.src = "part.svg";
 
-      sprite.sizeX = size.x;
-      sprite.sizeY = size.y;
+      // dimensions
+      sprite.sizeX = 300;
+      sprite.sizeY = 100;
 
+      // add component to entity
       part.addComponent(sprite);
 
       return part;

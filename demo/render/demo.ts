@@ -10,128 +10,103 @@ namespace sczBase.demo.render
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      game.addScene(new sczCore.SceneBase(0, game.getEventBus()));
+      let scene = new sczCore.SceneBase(0, game.getEventBus());
+      game.addScene(scene);
 
       // add render system
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
       game.addSystem(
-          0, new CanvasRenderSystem(
+          scene.getId(),
+          new CanvasRenderSystem(
               context, translateService,
               game.getEventBus()));
 
       // add parts system
       game.addSystem(
-          0, new PartSystem(
+          scene.getId(),
+          new PartSystem(
               game.getEventBus()));
 
+      // define common values
       let centerX = document.body.clientWidth / 2;
       let centerY = document.body.clientHeight / 2;
+      let center = {x: centerX, y: centerY, z: 0};
+      let sizes = [
+          {x:  0.5, y:  0.5},
+          {x:  0.5, y: -0.5},
+          {x: -0.5, y:  0.5},
+          {x: -0.5, y: -0.5}];
 
-      game.addEntity(
-          PartFactory.create(
-              0,
-              "part.svg",
-              {x: 300, y: 100},
-              {x: centerX, y: centerY, z: 0},
-              {x: 50, y: 50},
-              {x: 0.5, y: 0.5}));
-      game.registerEntity(0, CanvasRenderSystem, 0);
-      game.registerEntity(0, PartSystem, 0);
+      // list of the original parts
+      let masters: number[] = [];
 
-      game.addEntity(
-        PartFactory.create(
-          10,
-          "part.svg",
-          {x: 300, y: 100},
-          {x: centerX, y: centerY, z: 0},
-          {x: 50, y: 50},
-          {x: 0.5, y: -0.5}
-        ));
-      game.registerEntity(0, CanvasRenderSystem, 10);
-      game.registerEntity(0, PartSystem, 10);
-
-      game.addEntity(
-        PartFactory.create(
-          20,
-          "part.svg",
-          {x: 300, y: 100},
-          {x: centerX, y: centerY, z: 0},
-          {x: 50, y: 50},
-          {x: -0.5, y: 0.5}
-        ));
-      game.registerEntity(0, CanvasRenderSystem, 20);
-      game.registerEntity(0, PartSystem, 20);
-
-      game.addEntity(
-        PartFactory.create(
-          30,
-          "part.svg",
-          {x: 300, y: 100},
-          {x: centerX, y: centerY, z: 0},
-          {x: 50, y: 50},
-          {x: -0.5, y: -0.5}
-        ));
-      game.registerEntity(0, CanvasRenderSystem, 30);
-      game.registerEntity(0, PartSystem, 30);
-
-      for(let i = 1; i <= 5; i++)
+      // assemble the origial parts
+      for(let i = 0; i < sizes.length; i++)
       {
-        game.addEntity(
-          PartFactory.create(
-            i,
-            "part.svg",
-            {x: 300, y: 100},
-            {x: 250, y: 0, z: i},
-            {x: 50, y: 50},
-            {x: 0.75, y: 0.75},
-            0, i-1
-        ));
-        game.registerEntity(0, CanvasRenderSystem, i);
-        game.registerEntity(0, PartSystem, i);
+        // create part via factory
+        let master = PartFactory.create(
+            i * 10,
+            center,
+            sizes[i]);
 
-        game.addEntity(
-          PartFactory.create(
-            i+10,
-            "part.svg",
-            {x: 300, y: 100},
-            {x: 250, y: 0, z: i},
-            {x: 50, y: 50},
-            {x: 0.75, y: 0.75},
-            0, i+9
-        ));
-        game.registerEntity(0, CanvasRenderSystem, i+10);
-        game.registerEntity(0, PartSystem, i+10);
+        // add part to game
+        game.addEntity(master);
 
-        game.addEntity(
-          PartFactory.create(
-            i+20,
-            "part.svg",
-            {x: 300, y: 100},
-            {x: 250, y: 0, z: i},
-            {x: 50, y: 50},
-            {x: 0.75, y: 0.75},
-            0, i+19
-        ));
-        game.registerEntity(0, CanvasRenderSystem, i+20);
-        game.registerEntity(0, PartSystem, i+20);
+        // register part in render system
+        game.registerEntity(
+            scene.getId(),
+            CanvasRenderSystem,
+            master.getId());
 
-        game.addEntity(
-          PartFactory.create(
-            i+30,
-            "part.svg",
-            {x: 300, y: 100},
-            {x: 250, y: 0, z: i},
-            {x: 50, y: 50},
-            {x: 0.75, y: 0.75},
-            0, i+29
-        ));
-        game.registerEntity(0, CanvasRenderSystem, i+30);
-        game.registerEntity(0, PartSystem, i+30);
+        // register part in part system
+        game.registerEntity(
+            scene.getId(),
+            PartSystem,
+            master.getId());
+
+        masters.push(master.getId());
       }
 
+      // assemble part chains for each master
+      for(let masterId of masters)
+      {
+        for(let i = 1; i <= 5; i++)
+        {
+          let id = i + masterId;
+          let position = {x: 250, y: 0, z: i};
+          let factor = {x: 0.75, y: 0.75};
+
+          // create part via part factory
+          let part =
+              PartFactory.create(
+                  id,
+                  position,
+                  factor,
+                  id-1);
+
+          // add part to game
+          game.addEntity(part);
+
+          // register part to render system
+          game.registerEntity(
+              scene.getId(),
+              CanvasRenderSystem,
+              part.getId());
+
+          // register part to part system
+          game.registerEntity(
+              scene.getId(),
+              PartSystem,
+              part.getId());
+        }
+      }
+
+      // start the game engine
       game.start();
-      game.activateScene(0);
+
+      // activate the scene
+      game.activateScene(scene.getId());
     }
   }
 }
