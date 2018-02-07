@@ -17,7 +17,7 @@
         (suite, test) =>
         {
           testCount++;
-          //console.log(suite.name + "::" + test.name + " [...]");
+          console.log(suite.name + "::" + test.name + " [...]");
         },
         (suite, test, error) =>
         {
@@ -29,7 +29,7 @@
           }
           else
           {
-            //console.log(suite.name + "::" + test.name + " [SUCCESS]");
+            console.log(suite.name + "::" + test.name + " [SUCCESS]");
           }
         });
         console.log("success rate: "

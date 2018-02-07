@@ -10,11 +10,16 @@ namespace sczBase.tests
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      let e1 = TEFactory.create();
-      game.addEntity(e1);
-      let e1Size = translateService.getAbsoluteSize(
-        <TranslateComponent>e1.getComponent(TranslateComponent));
-      if(e1Size.x != 1 || e1Size.y != 1)
+      let translate = TranslateFactory.createS({x:1, y:1});
+      let size = translateService.getAbsoluteSize(translate);
+      if(size.x != 1 || size.y != 1)
+      {
+        throw new Error("parentless translate: size not equal");
+      }
+
+      translate = TranslateFactory.createS({x:0.5, y:-0.5});
+      size = translateService.getAbsoluteSize(translate);
+      if(size.x != 0.5 || size.y != -0.5)
       {
         throw new Error("parentless translate: size not equal");
       }
@@ -25,13 +30,12 @@ namespace sczBase.tests
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      let e1 = TEFactory.create();
-      game.addEntity(e1);
-      let e2 = TEFactory.createF({x:0.5,y:0.5}, TEFactory.id -1);
-      game.addEntity(e2);
-      let e2Size = translateService.getAbsoluteSize(
-        <TranslateComponent>e2.getComponent(TranslateComponent));
-      if(e2Size.x != 0.5 || e2Size.y != 0.5)
+      let parent = EntityFactory.create();
+      game.addEntity(parent);
+      let translate = TranslateFactory.createS(
+          {x:0.5,y:0.5}, parent.getId());
+      let size = translateService.getAbsoluteSize(translate);
+      if(size.x != 0.5 || size.y != 0.5)
       {
         throw new Error("cascaded translate: size not equal");
       }
@@ -42,20 +46,56 @@ namespace sczBase.tests
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      let e1 = TEFactory.createF({x:-1.0, y:-1.0});
-      game.addEntity(e1);
-      let e2 = TEFactory.createF({x:0.5,y:-0.5}, TEFactory.id -1);
-      game.addEntity(e2);
-      let e2Size = translateService.getAbsoluteSize(
-        <TranslateComponent>e2.getComponent(TranslateComponent));
-      if(e2Size.x != -0.5 || e2Size.y != 0.5)
+      let parent = EntityFactory.createS({x:-1.0, y:-1.0});
+      game.addEntity(parent);
+      let translate = TranslateFactory.createS({x:0.5,y:-0.5}, parent.getId());
+      let size = translateService.getAbsoluteSize(translate);
+      if(size.x != -0.5 || size.y != 0.5)
       {
         throw new Error("inverted translate: size not equal");
       }
     }
   }
-  
-  class TEFactory
+
+  class TranslateFactory
+  {
+    public static createS(
+        size: {x: number, y: number} = {x: 1, y: 1},
+        parentId: number = -1): TranslateComponent
+    {
+      let translate = new TranslateComponent();
+      translate.sizeX = size.x;
+      translate.sizeY = size.y;
+      translate.parentId = parentId;
+      return translate;
+    }
+
+    public static createR(
+        position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
+        rotation: number = 0): TranslateComponent
+    {
+      let translate = new TranslateComponent();
+      translate.positionX = position.x;
+      translate.positionY = position.y;
+      translate.positionZ = position.z;
+      translate.rotation = rotation;
+      return translate;
+    }
+
+    public static createP(
+        position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
+        parentId: number = -1): TranslateComponent
+    {
+      let translate = new TranslateComponent();
+      translate.positionX = position.x;
+      translate.positionY = position.y;
+      translate.positionZ = position.z;
+      translate.parentId = parentId;
+      return translate;
+    }
+  }
+
+  class EntityFactory
   {
     public static id = 0;
     public static create(
@@ -83,7 +123,7 @@ namespace sczBase.tests
       return entity;
     }
 
-    public static createF(
+    public static createS(
       factor: {x: number, y: number},
       parent: number = -1
     ) : sczCore.Entity

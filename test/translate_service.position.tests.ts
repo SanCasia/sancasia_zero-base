@@ -10,14 +10,14 @@ namespace sczBase.tests
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      let e1 = EntityFactory.create({x:32, y:44, z:56});
-      game.addEntity(e1);
-      let e1Position = translateService.getAbsolutePosition(
-        <TranslateComponent>e1.getComponent(TranslateComponent));
-      if(e1Position.x != 32 || e1Position.y != 44 || e1Position.z != 56)
+      let translate = TranslateFactory.createP({x:32, y:44, z:56});
+      let position = translateService.getAbsolutePosition(translate);
+
+      if(position.x != 32 || position.y != 44 || position.z != 56)
       {
-        throw new Error(`parentless translate: position not equal
-          (${e1Position.x}/${e1Position.y}/${e1Position.z})`);
+        throw new Error(
+            `parentless translate: position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (32/44/56)]`);
       }
     }
 
@@ -26,42 +26,40 @@ namespace sczBase.tests
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      let e1 = EntityFactory.create(
-        {x:5, y:12, z:13});
-      game.addEntity(e1);
+      let grandparent = EntityFactory.create(
+          {x:5, y:12, z:13});
+      game.addEntity(grandparent);
 
-      let e2 = EntityFactory.create(
-        {x:3, y:4, z:5},
-        {x:1, y:1},
-        0, EntityFactory.id -1);
-      game.addEntity(e2);
+      let parent = EntityFactory.createP(
+          {x:3, y:4, z:5}, grandparent.getId());
+      game.addEntity(parent);
 
-      let e3 = EntityFactory.create(
-        {x:-1, y:-2, z:-3},
-        {x:1, y:1},
-        0, EntityFactory.id -1);
-      game.addEntity(e3);
+      let child = EntityFactory.createP(
+          {x:-1, y:-2, z:-3}, parent.getId());
+      game.addEntity(child);
 
-      let e2Position = translateService.getAbsolutePosition(
-        <TranslateComponent>e2.getComponent(TranslateComponent));
-      if(
-        Math.fround(e2Position.x) != 8 ||
-        Math.fround(e2Position.y) != 16 ||
-        Math.fround(e2Position.z) != 18)
+      let parentPosition = translateService.getAbsolutePosition(
+        <TranslateComponent>parent.getComponent(TranslateComponent));
+      if( Math.fround(parentPosition.x) != 8 ||
+          Math.fround(parentPosition.y) != 16 ||
+          Math.fround(parentPosition.z) != 18)
       {
-        throw new Error(`cascaded translate (8/16/18): ` +
-          `position not equal (${e2Position.x}/${e2Position.y}/${e2Position.z})`);
+        throw new Error(
+            `cascaded translate: position not equal ` +
+            `[(${parentPosition.x}/${parentPosition.y}/${parentPosition.z}) ` +
+            `!= (8/16/18)]`);
       }
 
-      let e3Position = translateService.getAbsolutePosition(
-        <TranslateComponent>e3.getComponent(TranslateComponent));
-      if(
-        Math.fround(e3Position.x) != 7 ||
-        Math.fround(e3Position.y) != 14 ||
-        Math.fround(e3Position.z) != 15)
+      let childPosition = translateService.getAbsolutePosition(
+        <TranslateComponent>child.getComponent(TranslateComponent));
+      if( Math.fround(childPosition.x) != 7 ||
+          Math.fround(childPosition.y) != 14 ||
+          Math.fround(childPosition.z) != 15)
       {
-        throw new Error(`cascaded translate (7/14/15): `+
-          `position not equal (${e3Position.x}/${e3Position.y}/${e3Position.z})`);
+        throw new Error(
+            `cascaded translate: position not equal ` +
+            `[(${childPosition.x}/${childPosition.y}/${childPosition.z}) ` +
+            `!= (7/14/15)]`);
       }
     }
 
@@ -71,20 +69,17 @@ namespace sczBase.tests
       let translateService = new TranslateService(game);
       let parent = EntityFactory.createS({x:-1, y:1});
       game.addEntity(parent);
-      let child = EntityFactory.createP(
-        {x:100, y:50, z:0}, EntityFactory.id -1);
-      game.addEntity(child);
-      let translate =
-        <TranslateComponent>child.getComponent(TranslateComponent);
+      let translate = TranslateFactory.createP(
+        {x:100, y:50, z:0}, parent.getId());
 
       let position = translateService.getAbsolutePosition(translate);
-      if(
-        Math.fround(position.x) != -100 ||
-        Math.fround(position.y) != 50 ||
-        Math.fround(position.z) != 0)
+      if( Math.fround(position.x) != -100 ||
+          Math.fround(position.y) != 50 ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate: position not equal` +
-          `(${position.x}/${position.y}/${position.z} != (-100/50/0))`);
+        throw new Error(
+            `inverted translate: position not equal` +
+            `[(${position.x}/${position.y}/${position.z}) != (-100/50/0)]`);
       }
     }
 
@@ -94,20 +89,17 @@ namespace sczBase.tests
       let translateService = new TranslateService(game);
       let parent = EntityFactory.createS({x:1, y:-1});
       game.addEntity(parent);
-      let child = EntityFactory.createP(
-        {x:100, y:50, z:0}, EntityFactory.id -1);
-      game.addEntity(child);
-      let translate =
-        <TranslateComponent>child.getComponent(TranslateComponent);
+      let translate = TranslateFactory.createP(
+        {x:100, y:50, z:0}, parent.getId());
 
       let position = translateService.getAbsolutePosition(translate);
-      if(
-        Math.fround(position.x) != 100 ||
-        Math.fround(position.y) != -50 ||
-        Math.fround(position.z) != 0)
+      if( Math.fround(position.x) != 100 ||
+          Math.fround(position.y) != -50 ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate: position not equal ` +
-          `(${position.x}/${position.y}/${position.z} != (100/-50/0))`);
+        throw new Error(
+            `inverted translate: position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (100/-50/0)]`);
       }
     }
 
@@ -117,20 +109,17 @@ namespace sczBase.tests
       let translateService = new TranslateService(game);
       let parent = EntityFactory.createS({x:-1, y:-1});
       game.addEntity(parent);
-      let child = EntityFactory.createP(
-        {x:100, y:50, z:0}, EntityFactory.id -1);
-      game.addEntity(child);
-      let translate =
-        <TranslateComponent>child.getComponent(TranslateComponent);
+      let translate = TranslateFactory.createP(
+        {x:100, y:50, z:0}, parent.getId());
 
       let position = translateService.getAbsolutePosition(translate);
-      if(
-        Math.fround(position.x) != -100 ||
-        Math.fround(position.y) != -50 ||
-        Math.fround(position.z) != 0)
+      if( Math.fround(position.x) != -100 ||
+          Math.fround(position.y) != -50 ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate: position not equal` +
-          `(${position.x}/${position.y}/${position.z} != (-100/-50/0))`);
+        throw new Error(
+            `inverted translate: position not equal` +
+            `[(${position.x}/${position.y}/${position.z}) != (-100/-50/0)]`);
       }
     }
 
@@ -142,13 +131,13 @@ namespace sczBase.tests
       let translate = TranslateFactory.createR({x:100, y:50, z:0}, 90);
       let position = translateService.getAbsolutePosition(translate);
 
-      if(
-        Math.fround(position.x) != 100 ||
-        Math.fround(position.y) != 50 ||
-        Math.fround(position.z) != 0)
+      if( Math.fround(position.x) != 100 ||
+          Math.fround(position.y) != 50 ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate (100/500/0): position not equal
-          (${position.x}/${position.y}/${position.z})`);
+        throw new Error(
+            `inverted translate: position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (100/50/0)]`);
       }
     }
 
@@ -165,8 +154,9 @@ namespace sczBase.tests
         Math.fround(position.y) != 50 ||
         Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate (100/50/0): position not equal
-          (${position.x}/${position.y}/${position.z})`);
+        throw new Error(
+            `inverted translate: position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (100/50/0)]`);
       }
     }
 
@@ -183,8 +173,10 @@ namespace sczBase.tests
         Math.fround(position.y) != 50 ||
         Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate (100/50/0): position not equal
-          (${position.x}/${position.y}/${position.z})`);
+        throw new Error(
+            `inverted translate: ` +
+            `position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (100/50/0)]`);
       }
     }
 
@@ -195,10 +187,9 @@ namespace sczBase.tests
 
       let parent = EntityFactory.createR(0);
       game.addEntity(parent);
-      let child = EntityFactory.createP(
-        {x:100, y:50, z:0}, EntityFactory.id -1);
-      let translate =
-        <TranslateComponent> child.getComponent(TranslateComponent);
+      let translate = TranslateFactory.createP(
+          {x:100, y:50, z:0},
+          parent.getId());
 
       let position = translateService.getAbsolutePosition(translate);
       if(
@@ -206,8 +197,10 @@ namespace sczBase.tests
         Math.fround(position.y) != 50 ||
         Math.fround(position.z) != 0)
       {
-        throw new Error(`rotated-cascaded translate (100/50/0): `+
-          `position not equal (${position.x}/${position.y}/${position.z})`);
+        throw new Error(
+            `rotated-cascaded translate: `+
+            `position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (100/50/0)]`);
       }
     }
 
@@ -218,10 +211,9 @@ namespace sczBase.tests
 
       let parent = EntityFactory.createR(90);
       game.addEntity(parent);
-      let child = EntityFactory.createP(
-        {x:100, y:50, z:0}, EntityFactory.id -1);
-      let translate =
-        <TranslateComponent> child.getComponent(TranslateComponent);
+      let translate = TranslateFactory.createP(
+          {x:100, y:50, z:0},
+          parent.getId());
 
       let position = translateService.getAbsolutePosition(translate);
       if(
@@ -229,8 +221,10 @@ namespace sczBase.tests
         Math.fround(position.y) != 100 ||
         Math.fround(position.z) != 0)
       {
-        throw new Error(`rotated-cascaded translate (-50/100/0): `+
-          ` position not equal (${position.x}/${position.y}/${position.z})`);
+        throw new Error(
+            `rotated-cascaded translate: ` +
+            ` position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (-50/100/0)]`);
       }
     }
 
@@ -241,9 +235,9 @@ namespace sczBase.tests
 
       let parent = EntityFactory.createR(180);
       game.addEntity(parent);
-      let child = EntityFactory.createP({x:100, y:50, z:0}, EntityFactory.id -1);
-      let translate =
-        <TranslateComponent> child.getComponent(TranslateComponent);
+      let translate = TranslateFactory.createP(
+          {x:100, y:50, z:0},
+          parent.getId());
 
       let position = translateService.getAbsolutePosition(translate);
       if(
@@ -251,8 +245,10 @@ namespace sczBase.tests
         Math.fround(position.y) != -50 ||
         Math.fround(position.z) != 0)
       {
-        throw new Error(`rotated-cascaded translate (-100/-50/0): ` +
-          `position not equal (${position.x}/${position.y}/${position.z})`);
+        throw new Error(
+            `rotated-cascaded translate: ` +
+            `position not equal ` +
+            `[(${position.x}/${position.y}/${position.z}) != (-100/-50/0)]`);
       }
     }
 
@@ -263,18 +259,19 @@ namespace sczBase.tests
 
       let parent = EntityFactory.createR(-90);
       game.addEntity(parent);
-      let child = EntityFactory.createP({x:100, y:50, z:0}, EntityFactory.id -1);
-      let translate =
-        <TranslateComponent> child.getComponent(TranslateComponent);
+      let translate = TranslateFactory.createP(
+          {x:100, y:50, z:0},
+          parent.getId());
 
       let position = translateService.getAbsolutePosition(translate);
-      if(
-        Math.fround(position.x) != 50 ||
-        Math.fround(position.y) != -100 ||
-        Math.fround(position.z) != 0)
+      if( Math.fround(position.x) != 50 ||
+          Math.fround(position.y) != -100 ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`rotated-cascaded translate (50/-100/0): ` +
-          `position not equal (${position.x}/${position.y}/${position.z})`);
+        throw new Error(
+            `rotated-cascaded translate: ` +
+            `position not equal ` +
+            `[](${position.x}/${position.y}/${position.z}) !=  (50/-100/0)]`);
       }
     }
 
@@ -287,20 +284,19 @@ namespace sczBase.tests
           30, {x: 1, y: -1});
       game.addEntity(parent);
 
-      let child = EntityFactory.createP(
+      let translate = TranslateFactory.createP(
           {x:Math.sqrt(3), y:1, z:0},
-          EntityFactory.id -1);
-      let childTranslate =
-          <TranslateComponent>child.getComponent(TranslateComponent)
+          parent.getId());
 
-      let childPosition = translateService.getAbsolutePosition(childTranslate);
-      if( Math.fround(childPosition.x) !=  1 ||
-          Math.fround(childPosition.y) != Math.fround(-Math.sqrt(3)) ||
-          Math.fround(childPosition.z) != 0)
+      let position = translateService.getAbsolutePosition(translate);
+      if( Math.fround(position.x) !=  1 ||
+          Math.fround(position.y) != Math.fround(-Math.sqrt(3)) ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate: position not equal` +
-            `(${childPosition.x}/${childPosition.y}/${childPosition.z} != ` +
-            `1/${-Math.sqrt(3)}/0`);
+        throw new Error(
+            `inverted translate: position not equal` +
+            `[(${position.x}/${position.y}/${position.z}) != ` +
+            `(1/${-Math.sqrt(3)}/0)]`);
       }
     }
 
@@ -313,20 +309,19 @@ namespace sczBase.tests
           30, {x: -1, y: 1});
       game.addEntity(parent);
 
-      let child = EntityFactory.createP(
+      let translate = TranslateFactory.createP(
           {x:Math.sqrt(3), y:1, z:0},
-          EntityFactory.id -1);
-      let childTranslate =
-          <TranslateComponent>child.getComponent(TranslateComponent)
+          parent.getId());
 
-      let childPosition = translateService.getAbsolutePosition(childTranslate);
-      if( Math.fround(childPosition.x) !=  -1 ||
-          Math.fround(childPosition.y) != Math.fround(Math.sqrt(3)) ||
-          Math.fround(childPosition.z) != 0)
+      let position = translateService.getAbsolutePosition(translate);
+      if( Math.fround(position.x) !=  -1 ||
+          Math.fround(position.y) != Math.fround(Math.sqrt(3)) ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate: position not equal` +
-            `(${childPosition.x}/${childPosition.y}/${childPosition.z} != ` +
-            `-1/${-Math.sqrt(3)}/0`);
+        throw new Error(
+            `inverted translate: position not equal` +
+            `[(${position.x}/${position.y}/${position.z}) != ` +
+            `(-1/${-Math.sqrt(3)}/0)]`);
       }
     }
 
@@ -339,20 +334,19 @@ namespace sczBase.tests
           30, {x: -1, y: -1});
       game.addEntity(parent);
 
-      let child = EntityFactory.createP(
+      let translate = TranslateFactory.createP(
           {x:Math.sqrt(3), y:1, z:0},
-          EntityFactory.id -1);
-      let childTranslate =
-          <TranslateComponent>child.getComponent(TranslateComponent)
+          parent.getId());
 
-      let childPosition = translateService.getAbsolutePosition(childTranslate);
-      if( Math.fround(childPosition.x) !=  -1 ||
-          Math.fround(childPosition.y) != Math.fround(-Math.sqrt(3)) ||
-          Math.fround(childPosition.z) != 0)
+      let position = translateService.getAbsolutePosition(translate);
+      if( Math.fround(position.x) !=  -1 ||
+          Math.fround(position.y) != Math.fround(-Math.sqrt(3)) ||
+          Math.fround(position.z) != 0)
       {
-        throw new Error(`inverted translate: position not equal` +
-            `(${childPosition.x}/${childPosition.y}/${childPosition.z} != ` +
-            `-1/${-Math.sqrt(3)}/0`);
+        throw new Error(
+            `inverted translate: position not equal` +
+            `[(${position.x}/${position.y}/${position.z}) != ` +
+            `(-1/${-Math.sqrt(3)}/0)]`);
       }
     }
   }
@@ -360,14 +354,26 @@ namespace sczBase.tests
   class TranslateFactory
   {
     public static createR(
-      position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
-      rotation: number = 0): TranslateComponent
+        position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
+        rotation: number = 0): TranslateComponent
     {
       let translate = new TranslateComponent();
       translate.positionX = position.x;
       translate.positionY = position.y;
       translate.positionZ = position.z;
       translate.rotation = rotation;
+      return translate;
+    }
+
+    public static createP(
+        position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
+        parentId: number = -1): TranslateComponent
+    {
+      let translate = new TranslateComponent();
+      translate.positionX = position.x;
+      translate.positionY = position.y;
+      translate.positionZ = position.z;
+      translate.parentId = parentId;
       return translate;
     }
   }

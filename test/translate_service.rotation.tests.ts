@@ -10,34 +10,37 @@ namespace sczBase.tests
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      let e1 = TEFactory.createR(109);
-      game.addEntity(e1);
-      let e1Rotation = translateService.getAbsoluteRotation(
-        <TranslateComponent>e1.getComponent(TranslateComponent));
-      if(e1Rotation != 109)
+      let grandparent = TEFactory.createR(109);
+      game.addEntity(grandparent);
+      let grandparentRotation = translateService.getAbsoluteRotation(
+        <TranslateComponent>grandparent.getComponent(TranslateComponent));
+      if(grandparentRotation != 109)
       {
-        throw new Error(`parentless translate(109): rotation not equal
-          (${e1Rotation})`);
+        throw new Error(
+            `parentless translate: ` +
+            `rotation not equal [${grandparentRotation}° != 109°]`);
       }
 
-      let e2 = TEFactory.createR(-90);
-      game.addEntity(e2);
-      let e2Rotation = translateService.getAbsoluteRotation(
-        <TranslateComponent>e2.getComponent(TranslateComponent));
-      if(e2Rotation != 270)
+      let parent = TEFactory.createR(-90);
+      game.addEntity(parent);
+      let parentRotation = translateService.getAbsoluteRotation(
+        <TranslateComponent>parent.getComponent(TranslateComponent));
+      if(parentRotation != 270)
       {
-        throw new Error(`parentless translate(270): rotation not equal
-          (${e2Rotation})`);
+        throw new Error(
+            `parentless translate: ` +
+            `rotation not equal [${parentRotation}° != 270°]`);
       }
 
-      let e3 = TEFactory.createR(450);
-      game.addEntity(e3);
-      let e3Rotation = translateService.getAbsoluteRotation(
-        <TranslateComponent>e3.getComponent(TranslateComponent));
-      if(e3Rotation != 90)
+      let child = TEFactory.createR(450);
+      game.addEntity(child);
+      let childRotation = translateService.getAbsoluteRotation(
+        <TranslateComponent>child.getComponent(TranslateComponent));
+      if(childRotation != 90)
       {
-        throw new Error(`parentless translate(90): rotation not equal
-          (${e3Rotation})`);
+        throw new Error(
+            `parentless translate: ` +
+            `rotation not equal [${parentRotation}° != 90°]`);
       }
     }
 
@@ -46,15 +49,17 @@ namespace sczBase.tests
       let game = new sczCore.Game();
       let translateService = new TranslateService(game);
 
-      let e1 = TEFactory.createR(109);
-      game.addEntity(e1);
-      let e2 = TEFactory.createR(-56, TEFactory.id -1);
-      game.addEntity(e2);
-      let e2Rotation = translateService.getAbsoluteRotation(
-        <TranslateComponent>e2.getComponent(TranslateComponent));
-        if(e2Rotation != 53)
+      let parent = TEFactory.createR(109);
+      game.addEntity(parent);
+      let child = TEFactory.createR(-56, parent.getId());
+      game.addEntity(child);
+      let rotation = translateService.getAbsoluteRotation(
+        <TranslateComponent>child.getComponent(TranslateComponent));
+        if(rotation != 53)
       {
-        throw new Error("cascaded translate: rotation not equal");
+        throw new Error(
+            `cascaded translate: ` +
+            `rotation not equal [${rotation}° != 53°]`);
       }
     }
 
@@ -72,8 +77,9 @@ namespace sczBase.tests
       let rotation = translateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
-        throw new Error(`inverted translate: rotation not equal
-          (${rotation}° != 60°)`);
+        throw new Error(
+            `inverted translate: rotation not equal ` +
+            `[${rotation}° != 60°]`);
       }
 
       translate.sizeX = -1;
@@ -81,8 +87,9 @@ namespace sczBase.tests
       rotation = translateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
-        throw new Error(`inverted translate: rotation not equal
-          (${rotation}° != 60°)`);
+        throw new Error(
+            `inverted translate: rotation not equal ` +
+            `[${rotation}° != 60°]`);
       }
 
       translate.sizeX =  1;
@@ -90,8 +97,9 @@ namespace sczBase.tests
       rotation = translateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
-        throw new Error(`inverted translate: rotation not equal
-        (${rotation}° != 60°)`);
+        throw new Error(
+            `inverted translate: rotation not equal ` +
+            `[${rotation}° != 60°]`);
       }
 
       translate.sizeX = -1;
@@ -99,8 +107,9 @@ namespace sczBase.tests
       rotation = translateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
-        throw new Error(`inverted translate: rotation not equal
-        (${rotation}° != 60°)`);
+        throw new Error(
+            `inverted translate: rotation not equal ` +
+            `[${rotation}° != 60°]`);
       }
     }
 
@@ -111,7 +120,7 @@ namespace sczBase.tests
 
       let parent = TEFactory.createR(45);
       game.addEntity(parent);
-      let child = TEFactory.createR(15, TEFactory.id -1);
+      let child = TEFactory.createR(15, parent.getId());
       let parentTranslate =
         <TranslateComponent>parent.getComponent(TranslateComponent)
       let childTranslate =
@@ -124,16 +133,18 @@ namespace sczBase.tests
       let childRotation = translateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 60)
       {
-        throw new Error(`inverted translate: ` +
-          `rotation not equal (${childRotation}° != 120°)`);
+        throw new Error(
+            `inverted translate: ` +
+            `rotation not equal [${childRotation}° != 120°]`);
       }
 
       childTranslate.rotation = -15;
       childRotation = translateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 30)
       {
-        throw new Error(`inverted translate: ` +
-          `rotation not equal (${childRotation}° != 150°)`);
+        throw new Error(
+            `inverted translate: ` +
+            `rotation not equal [${childRotation}° != 150°]`);
       }
 
       parentTranslate.sizeX =  1;
@@ -143,16 +154,18 @@ namespace sczBase.tests
       childRotation = translateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 30)
       {
-        throw new Error(`inverted translate: ` +
-          `rotation not equal (${childRotation}° != 330°)`);
+        throw new Error(
+            `inverted translate: ` +
+            `rotation not equal [${childRotation}° != 30°]`);
       }
 
       childTranslate.rotation = 15;
       childRotation = translateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 60)
       {
-        throw new Error(`inverted translate: ` +
-          `rotation not equal (${childRotation}° != 300°)`);
+        throw new Error(
+            `inverted translate: ` +
+            `rotation not equal [${childRotation}° != 60°]`);
       }
     }
   }
