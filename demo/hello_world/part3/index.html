@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello World: Part 3</title>
+    <script src="../../../node_modules/sancasia_zero-core/obj/sancasia_zero.core.js"></script>
+    <script src="../../../obj/sancasia_zero.base.js"></script>
+    <script src="../../../obj/sancasia_zero.base.demos.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas">
+
+    </canvas>
+    <script>
+        var canvas = document.getElementById('canvas');
+        canvas.width = 400;
+        canvas.height = 800;
+        sczBase.demo.helloWorld.partThree.HelloWorld.main();
+    </script>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #DDD;
+      }
+      canvas {
+        border: 2px solid darkgray;
+        border-radius: 3px;
+      }
+    </style>
+  </body>
+</html>

@@ -1,9 +1,9 @@
 /// <reference path="../../../node_modules/sancasia_zero-core/obj/sancasia_zero.core.d.ts" />
 /// <reference path="../../../obj/sancasia_zero.base.d.ts" />
 
-namespace sczBase.demo.render
+namespace sczBase.demo.helloWorld.partOne
 {
-  export class Helloworld
+  export class HelloWorld
   {
     public static main()
     {
