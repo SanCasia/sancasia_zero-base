@@ -1,6 +1,6 @@
 {
   "name": "sancasia_zero-base",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "This is the base package of the SanCasia Zero engine",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
