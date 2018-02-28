@@ -80,6 +80,8 @@ namespace sczBase
           entity.updateCache(this, cache);
         };
       }
+
+      this.actionQueue = new Array<{call: Function, args: Array<any>}>();
     }
   }
 }

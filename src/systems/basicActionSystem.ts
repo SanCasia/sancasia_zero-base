@@ -17,37 +17,37 @@ namespace sczBase
       this.actionHandler = actionHandler;
     }
 
-    protected queueMenuAction(_: void): void
+    protected queueMenuAction = (_: void): void =>
     {
       this.actionQueue.push(
         {call: this.actionHandler.menu, args: []});
     }
 
-    protected queueReturnAction(_: void): void
+    protected queueReturnAction = (_: void): void =>
     {
       this.actionQueue.push(
         {call: this.actionHandler.return, args: []});
     }
 
-    protected queueStartAction(_: void): void
+    protected queueStartAction = (_: void): void =>
     {
       this.actionQueue.push(
         {call: this.actionHandler.start, args: []});
     }
 
-    protected queueStopAction(_: void): void
+    protected queueStopAction = (_: void): void =>
     {
       this.actionQueue.push(
         {call: this.actionHandler.stop, args: []});
     }
 
-    protected queueQuickSaveAction(_: void): void
+    protected queueQuickSaveAction = (_: void): void =>
     {
       this.actionQueue.push(
         {call: this.actionHandler.quickSave, args: []});
     }
 
-    protected queueQuickLoadAction(_: void): void
+    protected queueQuickLoadAction = (_: void): void =>
     {
       this.actionQueue.push(
         {call: this.actionHandler.quickLoad, args: []});
