@@ -12,10 +12,14 @@ namespace sczBase.demo.action
       let scene = new sczCore.SceneBase(0, game.getEventBus());
       game.addScene(scene);
 
-      let handler = new Handler();
+      let interpreter =
+        new sczBase.DefaultBasicInputInterpreter(game.getEventBus());
+      interpreter.activate();
+
+      let handler = new DemoActionHandler();
       game.addSystem(
         scene.getId(),
-        new sczBase.BasicActionSystem(
+        new BasicActionSystem(
           handler,
           [],
           game.getEventBus(),
@@ -25,10 +29,8 @@ namespace sczBase.demo.action
       game.addEntity(entity);
       game.registerEntity(
         scene.getId(),
-        sczBase.BasicActionSystem,
+        BasicActionSystem,
         entity.getId());
-      let interpreter =
-        new sczBase.DefaultBasicInputInterpreter(game.getEventBus());
 
       // start the game engine
       game.start();

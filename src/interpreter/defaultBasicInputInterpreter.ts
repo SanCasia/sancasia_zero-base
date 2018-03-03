@@ -8,58 +8,62 @@ namespace sczBase
     public constructor(eventbus: sczCore.EventBus)
     {
       super(eventbus);
+    }
 
-      document.addEventListener('keydown', this.interpreter);
+    public activate()
+    {
+      document.addEventListener('keyup', this.interpreter);
+      document.addEventListener('keydown', (e) => {e.preventDefault()});
+    }
+
+    public deactivate()
+    {
+      document.removeEventListener('keyup', this.interpreter);
     }
 
     protected interpreter = (event: KeyboardEvent): void =>
     {
-      switch (event.keyCode)
+      // menu:
+      //  pause, esc, "p"
+      if(event.keyCode ==  19 || event.keyCode ==  27 || event.keyCode ==  80)
       {
-        // menu:
-        //  pause, esc, "p"
-        case 19:
-        case 27:
-        case 80:
-          super.publishMenuAction();
+        super.publishMenuAction();
+      }
 
-        // return:
-        //  backspace, esc, delete
-        case 8:
-        case 27:
-        case 46:
-          super.publishReturnAction();
-          break;
+      // return:
+      //  backspace, esc, delete
+      if(event.keyCode ==  8 || event.keyCode ==  27 || event.keyCode ==  46)
+      {
+        super.publishReturnAction();
+      }
 
-        // start:
-        //  enter, space
-        case 13:
-        case 32:
-          super.publishStartAction()
-          break;
+      // start:
+      //  enter, space
+      if(event.keyCode ==  13 || event.keyCode ==  32)
+      {
+        super.publishStartAction()
+      }
 
-        // stop:
-        //  backspace, pause, esc, delete, "p"
-        case 8:
-        case 19:
-        case 27:
-        case 46:
-        case 80:
-          super.publishStopAction();
-          break;
+      // stop:
+      //  backspace, pause, esc, delete, "p"
+      if(event.keyCode ==  8 || event.keyCode ==  19 || event.keyCode ==  27
+          || event.keyCode ==  46 || event.keyCode ==  80)
+      {
+        super.publishStopAction();
+      }
 
-        // quick save:
-        //  "f6"
-        case 117:
-          super.publishQuickSaveAction();
-          break;
+      // quick save:
+      //  "f6"
+      if(event.keyCode ==  117)
+      {
+        super.publishQuickSaveAction();
+      }
 
-        // quick load:
-        //  "f5"
-        case 116:
-          super.publishQuickLoadAction();
-          break;
-
+      // quick load:
+      //  "f5"
+      if(event.keyCode ==  116)
+      {
+        super.publishQuickLoadAction();
       }
     }
   }

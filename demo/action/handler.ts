@@ -3,7 +3,7 @@
 
 namespace sczBase.demo.action
 {
-  export class Handler
+  export class DemoActionHandler
       extends sczBase.BasicActionHandlerBase
   {
     public menu(_: sczCore.Component[])

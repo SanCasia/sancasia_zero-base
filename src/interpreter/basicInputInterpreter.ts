@@ -2,7 +2,7 @@
 
 namespace sczBase
 {
-  export class BasicInputInterpreterBase
+  export abstract class BasicInputInterpreterBase
   {
     protected eventbus: sczCore.EventBus;
 
@@ -10,6 +10,9 @@ namespace sczBase
     {
       this.eventbus = eventbus;
     }
+
+    public abstract activate(): void;
+    public abstract deactivate(): void;
 
     protected publishMenuAction(): void
     {
