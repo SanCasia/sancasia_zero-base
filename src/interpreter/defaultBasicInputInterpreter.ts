@@ -12,16 +12,22 @@ namespace sczBase
 
     public activate()
     {
-      document.addEventListener('keyup', this.interpreter);
-      document.addEventListener('keydown', (e) => {e.preventDefault()});
+      document.addEventListener('keyup', this.keyUpInterpreter);
+      document.addEventListener('keydown', this.keyDownInterpreter);
     }
 
     public deactivate()
     {
-      document.removeEventListener('keyup', this.interpreter);
+      document.removeEventListener('keyup', this.keyUpInterpreter);
+      document.removeEventListener('keydown', this.keyDownInterpreter);
     }
 
-    protected interpreter = (event: KeyboardEvent): void =>
+    protected keyDownInterpreter = (event: KeyboardEvent): void =>
+    {
+      event.preventDefault();
+    }
+
+    protected keyUpInterpreter = (event: KeyboardEvent): void =>
     {
       // menu:
       //  pause, esc, "p"
@@ -64,6 +70,89 @@ namespace sczBase
       if(event.keyCode ==  116)
       {
         super.publishQuickLoadAction();
+      }
+
+      // select:
+      //  enter, space
+      if(event.keyCode ==  13 || event.keyCode ==  32)
+      {
+        super.publishSelectAction();
+      }
+
+      // unselect:
+      //  enter, space
+      if(event.keyCode ==  13 || event.keyCode ==  32)
+      {
+        super.publishUnselectAction();
+      }
+
+      // undo:
+      //  ctl + z
+      if(event.ctrlKey && event.keyCode == 90)
+      {
+        super.publishUndoAction();
+      }
+
+      // redo:
+      //  ctl + shift + z
+      if(event.ctrlKey && event.shiftKey && event.keyCode == 90)
+      {
+        super.publishRedoAction();
+      }
+
+      // up:
+      //  arrow_up, "w"
+      if(event.keyCode == 38 || event.keyCode == 87)
+      {
+        super.publishUpAction();
+      }
+
+      // down:
+      //  arrow_down, "s"
+      if(event.keyCode == 40 || event.keyCode == 83)
+      {
+        super.publishDownAction();
+      }
+
+      // left:
+      //  arrow_left, "a"
+      if(event.keyCode == 37 || event.keyCode == 65)
+      {
+        super.publishLeftAction();
+      }
+
+      // right:
+      //  arrow_right, "d"
+      if(event.keyCode == 39 || event.keyCode == 68)
+      {
+        super.publishRightAction();
+      }
+
+      // previous:
+      //  backspace, alt + arrow_left, ctl + arrow_left
+      if(event.keyCode == 8
+          || event.altKey && event.keyCode == 37
+          || event.ctrlKey && event.keyCode == 37)
+      {
+        super.publishPreviousAction();
+      }
+
+      // next:
+      //  alt + arrow_right, ctl + arrow_right
+      if(event.altKey && event.keyCode == 39
+          || event.ctrlKey && event.keyCode == 39)
+      {
+        super.publishNextAction();
+      }
+
+
+      // back:
+      //  backspace, alt + arrow_left, ctl + arrow_left
+      if(event.keyCode == 8
+          || event.altKey && event.keyCode == 37
+          || event.ctrlKey && event.keyCode == 37)
+      {
+        super.publishBackAction();
       }
     }
   }

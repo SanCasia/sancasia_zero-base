@@ -14,6 +14,7 @@ namespace sczBase
     public abstract activate(): void;
     public abstract deactivate(): void;
 
+    // basic actions
     protected publishMenuAction(): void
     {
       this.eventbus.publish(
@@ -48,6 +49,74 @@ namespace sczBase
     {
       this.eventbus.publish(
         BasicAction.QuickLoad, []);
+    }
+
+    // menu actions
+    protected publishSelectAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Select, []);
+    }
+
+    protected publishUnselectAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Unselect, []);
+    }
+
+    protected publishUndoAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Undo, []);
+    }
+
+    protected publishRedoAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Redo, []);
+    }
+
+    // menu navigation
+    protected publishUpAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Up, []);
+    }
+
+    protected publishDownAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Down, []);
+    }
+
+    protected publishLeftAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Left, []);
+    }
+
+    protected publishRightAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Right, []);
+    }
+
+    protected publishPreviousAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Previous, []);
+    }
+
+    protected publishNextAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Next, []);
+    }
+
+    protected publishBackAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Back, []);
     }
   }
 }
