@@ -17,6 +17,7 @@ namespace sczBase
       this.actionHandler = actionHandler;
     }
 
+    // basic actions
     protected queueMenuAction = (_: void): void =>
     {
       this.actionQueue.push(
@@ -53,60 +54,222 @@ namespace sczBase
         {call: this.actionHandler.quickLoad, args: []});
     }
 
+    // menu actions
+    protected queueSelectAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.select, args: []});
+    }
+
+    protected queueUnselectAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.unselect, args: []});
+    }
+
+    protected queueUndoAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.undo, args: []});
+    }
+
+    protected queueRedoAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.redo, args: []});
+    }
+
+    // menu navigation
+    protected queueUpAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.up, args: []});
+    }
+
+    protected queueDownAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.down, args: []});
+    }
+
+    protected queueLeftAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.left, args: []});
+    }
+
+    protected queueRightAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.right, args: []});
+    }
+
+    protected queuePreviousAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.previous, args: []});
+    }
+
+    protected queueNextAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.next, args: []});
+    }
+
+    protected queueBackAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.back, args: []});
+    }
+
     public activate(): void
     {
+      // basic actions
       this.eventbus.subscribe(
-          BasicAction.MENU_ACTION,
+          BasicAction.Menu,
           this.queueMenuAction);
 
       this.eventbus.subscribe(
-          BasicAction.RETURN_ACTION,
+          BasicAction.Return,
           this.queueReturnAction);
 
       this.eventbus.subscribe(
-          BasicAction.START_ACTION,
+          BasicAction.Start,
           this.queueStartAction);
 
       this.eventbus.subscribe(
-          BasicAction.STOP_ACTION,
+          BasicAction.Stop,
           this.queueStopAction);
 
       this.eventbus.subscribe(
-          BasicAction.QUICK_SAVE_ACTION,
+          BasicAction.QuickSave,
           this.queueQuickSaveAction);
 
       this.eventbus.subscribe(
-          BasicAction.QUICK_LOAD_ACTION,
+          BasicAction.QuickLoad,
           this.queueQuickLoadAction);
+
+      // menu actions
+      this.eventbus.subscribe(
+          BasicAction.Select,
+          this.queueSelectAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Unselect,
+          this.queueUnselectAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Undo,
+          this.queueUndoAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Redo,
+          this.queueRedoAction);
+
+      // menu navigation
+      this.eventbus.subscribe(
+          BasicAction.Up,
+          this.queueUpAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Down,
+          this.queueDownAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Left,
+          this.queueLeftAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Right,
+          this.queueRightAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Previous,
+          this.queuePreviousAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Next,
+          this.queueNextAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Back,
+          this.queueBackAction);
 
       super.activate();
     }
 
     public deactivate(): void
     {
+      // basic actions
       this.eventbus.unsubscribe(
-          BasicAction.MENU_ACTION,
+          BasicAction.Menu,
           this.queueMenuAction);
 
       this.eventbus.unsubscribe(
-          BasicAction.RETURN_ACTION,
+          BasicAction.Return,
           this.queueReturnAction);
 
       this.eventbus.unsubscribe(
-          BasicAction.START_ACTION,
+          BasicAction.Start,
           this.queueStartAction);
 
       this.eventbus.unsubscribe(
-          BasicAction.STOP_ACTION,
+          BasicAction.Stop,
           this.queueStopAction);
 
       this.eventbus.unsubscribe(
-          BasicAction.QUICK_SAVE_ACTION,
+          BasicAction.QuickSave,
           this.queueQuickSaveAction);
 
       this.eventbus.unsubscribe(
-          BasicAction.QUICK_LOAD_ACTION,
+          BasicAction.QuickLoad,
           this.queueQuickLoadAction);
+
+      // menu actions
+      this.eventbus.unsubscribe(
+          BasicAction.Select,
+          this.queueSelectAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Unselect,
+          this.queueUnselectAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Undo,
+          this.queueUndoAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Redo,
+          this.queueRedoAction);
+
+      // menu navigation
+      this.eventbus.unsubscribe(
+          BasicAction.Up,
+          this.queueUpAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Down,
+          this.queueDownAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Left,
+          this.queueLeftAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Right,
+          this.queueRightAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Previous,
+          this.queuePreviousAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Next,
+          this.queueNextAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Back,
+          this.queueBackAction);
 
       super.deactivate();
     }
@@ -114,11 +277,25 @@ namespace sczBase
 
   export enum BasicAction
   {
-      MENU_ACTION = "MENU_ACTION",
-      RETURN_ACTION = "RETURN_ACTION",
-      START_ACTION = "START_ACTION",
-      STOP_ACTION = "STOP_ACTION",
-      QUICK_SAVE_ACTION = "QUICK_SAVE_ACTION",
-      QUICK_LOAD_ACTION = "QUICK_LOAD_ACTION",
+    Menu = "BASIC_ACTION::MENU",
+    Return = "BASIC_ACTION::RETURN",
+    Start = "BASIC_ACTION::START",
+    Stop = "BASIC_ACTION::STOP",
+    QuickSave = "BASIC_ACTION::QUICK_SAVE",
+    QuickLoad = "BASIC_ACTION::QUICK_LOAD",
+
+    Select = "BASIC_ACTION::SELECT",
+    Unselect = "BASIC_ACTION::UNSELECT",
+    Undo = "BASIC_ACTION::UNDO",
+    Redo = "BASIC_ACTION::Red",
+
+    Up = "BASIC_ACTION::UP",
+    Down = "BASIC_ACTION::DOWN",
+    Left = "BASIC_ACTION::LEFT",
+    Right = "BASIC_ACTION::RIGHT",
+    Previous = "BASIC_ACTION::PREVIOUS",
+    Next = "BASIC_ACTION::NEXT",
+    Back = "BASIC_ACTION::BACK"
+
   }
 }

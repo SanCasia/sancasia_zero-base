@@ -17,37 +17,37 @@ namespace sczBase
     protected publishMenuAction(): void
     {
       this.eventbus.publish(
-        BasicAction.MENU_ACTION, []);
+        BasicAction.Menu, []);
     }
 
     protected publishReturnAction(): void
     {
       this.eventbus.publish(
-        BasicAction.RETURN_ACTION, []);
+        BasicAction.Return, []);
     }
 
     protected publishStartAction(): void
     {
       this.eventbus.publish(
-        BasicAction.START_ACTION, []);
+        BasicAction.Start, []);
     }
 
     protected publishStopAction(): void
     {
       this.eventbus.publish(
-        BasicAction.STOP_ACTION, []);
+        BasicAction.Stop, []);
     }
 
     protected publishQuickSaveAction(): void
     {
       this.eventbus.publish(
-        BasicAction.QUICK_SAVE_ACTION, []);
+        BasicAction.QuickSave, []);
     }
 
     protected publishQuickLoadAction(): void
     {
       this.eventbus.publish(
-        BasicAction.QUICK_LOAD_ACTION, []);
+        BasicAction.QuickLoad, []);
     }
   }
 }
