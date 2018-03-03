@@ -104,6 +104,18 @@ namespace sczBase
         {call: this.actionHandler.right, args: []});
     }
 
+    protected queueTopAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.top, args: []});
+    }
+
+    protected queueBottomAction = (_: void): void =>
+    {
+      this.actionQueue.push(
+        {call: this.actionHandler.bottom, args: []});
+    }
+
     protected queuePreviousAction = (_: void): void =>
     {
       this.actionQueue.push(
@@ -184,6 +196,14 @@ namespace sczBase
           this.queueRightAction);
 
       this.eventbus.subscribe(
+          BasicAction.Top,
+          this.queueTopAction);
+
+      this.eventbus.subscribe(
+          BasicAction.Bottom,
+          this.queueBottomAction);
+
+      this.eventbus.subscribe(
           BasicAction.Previous,
           this.queuePreviousAction);
 
@@ -260,6 +280,14 @@ namespace sczBase
           this.queueRightAction);
 
       this.eventbus.unsubscribe(
+          BasicAction.Top,
+          this.queueTopAction);
+
+      this.eventbus.unsubscribe(
+          BasicAction.Bottom,
+          this.queueBottomAction);
+
+      this.eventbus.unsubscribe(
           BasicAction.Previous,
           this.queuePreviousAction);
 
@@ -293,6 +321,8 @@ namespace sczBase
     Down = "BASIC_ACTION::DOWN",
     Left = "BASIC_ACTION::LEFT",
     Right = "BASIC_ACTION::RIGHT",
+    Top = "BASIC_ACTION::TOP",
+    Bottom = "BASIC_ACTION::BUTTOM",
     Previous = "BASIC_ACTION::PREVIOUS",
     Next = "BASIC_ACTION::NEXT",
     Back = "BASIC_ACTION::BACK"

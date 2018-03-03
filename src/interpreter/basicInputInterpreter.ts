@@ -101,6 +101,18 @@ namespace sczBase
         BasicAction.Right, []);
     }
 
+    protected publishTopAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Top, []);
+    }
+
+    protected publishBottomAction(): void
+    {
+      this.eventbus.publish(
+        BasicAction.Bottom, []);
+    }
+
     protected publishPreviousAction(): void
     {
       this.eventbus.publish(

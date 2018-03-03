@@ -128,6 +128,20 @@ namespace sczBase
         super.publishRightAction();
       }
 
+      // top:
+      //  home
+      if(event.keyCode == 36)
+      {
+        super.publishTopAction();
+      }
+
+      // bottom:
+      //  end
+      if(event.keyCode == 35)
+      {
+        super.publishBottomAction();
+      }
+
       // previous:
       //  backspace, alt + arrow_left, ctl + arrow_left
       if(event.keyCode == 8

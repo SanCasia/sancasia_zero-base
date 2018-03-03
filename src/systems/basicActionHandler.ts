@@ -23,6 +23,8 @@ namespace sczBase
     down(requires: Array<sczCore.Component>): void;
     left(requires: Array<sczCore.Component>): void;
     right(requires: Array<sczCore.Component>): void;
+    top(requires: sczCore.Component[]): void;
+    bottom(requires: sczCore.Component): void;
     previous(requires: Array<sczCore.Component>): void;
     next(requires: Array<sczCore.Component>): void;
     back(requires: Array<sczCore.Component>): void;
@@ -49,6 +51,8 @@ namespace sczBase
     down(_: sczCore.Component[]): void {}
     left(_: sczCore.Component[]): void {}
     right(_: sczCore.Component[]): void {}
+    top(_: sczCore.Component[]): void {}
+    bottom(_: sczCore.Component): void {}
     previous(_: sczCore.Component[]): void {}
     next(_: sczCore.Component[]): void {}
     back(_: sczCore.Component[]): void {}
