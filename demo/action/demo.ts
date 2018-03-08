@@ -13,19 +13,26 @@ namespace sczBase.demo.action
       game.addScene(scene);
 
       let interpreter =
-        new sczBase.DefaultBasicInputInterpreter(game.getEventBus());
-      interpreter.activate();
+        new DefaultBasicInputInterpreter(game.getEventBus());
 
-      let handler = new DemoActionHandler();
+      let handler = new DemoActionHandler(
+        game.getEventBus(),
+        MenuFactory.create());
+
+      let actionSystem = new BasicActionSystem(
+        handler,
+        [StateComponent],
+        game.getEventBus(),
+        sczCore.EngineEvent.PreComputation);
+
       game.addSystem(
         scene.getId(),
-        new BasicActionSystem(
-          handler,
-          [],
-          game.getEventBus(),
-          sczCore.EngineEvent.Computation));
+        actionSystem);
 
       let entity = new sczCore.Entity(0);
+      let gameState = new StateComponent();
+      entity.addComponent(gameState);
+
       game.addEntity(entity);
       game.registerEntity(
         scene.getId(),
@@ -37,6 +44,9 @@ namespace sczBase.demo.action
 
       // activate the scene
       game.activateScene(scene.getId());
+
+      // activate interpreter
+      interpreter.activate();
     }
   }
 }
