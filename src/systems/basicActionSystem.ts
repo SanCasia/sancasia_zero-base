@@ -5,6 +5,7 @@ namespace sczBase
   export class    BasicActionSystem
       extends     ActionSystemBase
   {
+    protected handlerRegistry: Map<Function, ((message: any) => void)>;
     protected actionHandler: BasicActionHandler;
 
     constructor(
@@ -15,205 +16,125 @@ namespace sczBase
     {
       super(requires, eventbus, event);
       this.actionHandler = actionHandler;
+      this.handlerRegistry = new Map<Function, ((message: any) => void)>();
     }
 
-    // basic actions
-    protected queueMenuAction = (_: void): void =>
+    protected bindToActionHandler(
+      eventType: any,
+      eventHandler: (
+        (deltatime: number,
+          requires: sczCore.Component[],
+          ...args: any[]) => void))
     {
-      this.actionQueue.push(
-        {call: this.actionHandler.menu, args: []});
+      this.handlerRegistry.set(
+        eventHandler,
+        (...args: any[]) => {
+          this.actionQueue.push({
+            call: eventHandler.bind(this.actionHandler),
+            args: args
+          });
+        }
+      );
+
+      this.eventbus.subscribe(
+          eventType,
+          this.handlerRegistry.get(eventHandler));
     }
 
-    protected queueReturnAction = (_: void): void =>
+    protected unbindFromActionHandler(
+      eventType: any,
+      eventHandler: (
+        (deltatime: number,
+          requires: sczCore.Component[],
+          ...args: any[]) => void))
     {
-      this.actionQueue.push(
-        {call: this.actionHandler.return, args: []});
-    }
+      this.eventbus.unsubscribe(
+          eventType,
+          this.handlerRegistry.get(eventHandler));
 
-    protected queueStartAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.start, args: []});
-    }
-
-    protected queueStopAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.stop, args: []});
-    }
-
-    protected queueQuickSaveAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.quickSave, args: []});
-    }
-
-    protected queueQuickLoadAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.quickLoad, args: []});
-    }
-
-    // menu actions
-    protected queueSelectAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.select, args: []});
-    }
-
-    protected queueUnselectAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.unselect, args: []});
-    }
-
-    protected queueUndoAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.undo, args: []});
-    }
-
-    protected queueRedoAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.redo, args: []});
-    }
-
-    // menu navigation
-    protected queueUpAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.up, args: []});
-    }
-
-    protected queueDownAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.down, args: []});
-    }
-
-    protected queueLeftAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.left, args: []});
-    }
-
-    protected queueRightAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.right, args: []});
-    }
-
-    protected queueTopAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.top, args: []});
-    }
-
-    protected queueBottomAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.bottom, args: []});
-    }
-
-    protected queuePreviousAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.previous, args: []});
-    }
-
-    protected queueNextAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.next, args: []});
-    }
-
-    protected queueBackAction = (_: void): void =>
-    {
-      this.actionQueue.push(
-        {call: this.actionHandler.back, args: []});
+      this.handlerRegistry.delete(eventHandler);
     }
 
     public activate(): void
     {
       // basic actions
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Menu,
-          this.queueMenuAction);
+          this.actionHandler.menu);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Return,
-          this.queueReturnAction);
+          this.actionHandler.return);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Start,
-          this.queueStartAction);
+          this.actionHandler.start);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Stop,
-          this.queueStopAction);
+          this.actionHandler.stop);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.QuickSave,
-          this.queueQuickSaveAction);
+          this.actionHandler.quickSave);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.QuickLoad,
-          this.queueQuickLoadAction);
+          this.actionHandler.quickLoad);
 
       // menu actions
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Select,
-          this.queueSelectAction);
+          this.actionHandler.select);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Unselect,
-          this.queueUnselectAction);
+          this.actionHandler.unselect);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Undo,
-          this.queueUndoAction);
+          this.actionHandler.undo);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Redo,
-          this.queueRedoAction);
+          this.actionHandler.redo);
 
       // menu navigation
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Up,
-          this.queueUpAction);
+          this.actionHandler.up);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Down,
-          this.queueDownAction);
+          this.actionHandler.down);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Left,
-          this.queueLeftAction);
+          this.actionHandler.left);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Right,
-          this.queueRightAction);
+          this.actionHandler.right);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Top,
-          this.queueTopAction);
+          this.actionHandler.top);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Bottom,
-          this.queueBottomAction);
+          this.actionHandler.bottom);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Previous,
-          this.queuePreviousAction);
+          this.actionHandler.previous);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Next,
-          this.queueNextAction);
+          this.actionHandler.next);
 
-      this.eventbus.subscribe(
+      this.bindToActionHandler(
           BasicAction.Back,
-          this.queueBackAction);
+          this.actionHandler.back);
 
       super.activate();
     }
@@ -221,83 +142,83 @@ namespace sczBase
     public deactivate(): void
     {
       // basic actions
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Menu,
-          this.queueMenuAction);
+          this.actionHandler.menu);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Return,
-          this.queueReturnAction);
+          this.actionHandler.return);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Start,
-          this.queueStartAction);
+          this.actionHandler.start);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Stop,
-          this.queueStopAction);
+          this.actionHandler.stop);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.QuickSave,
-          this.queueQuickSaveAction);
+          this.actionHandler.quickSave);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.QuickLoad,
-          this.queueQuickLoadAction);
+          this.actionHandler.quickLoad);
 
       // menu actions
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Select,
-          this.queueSelectAction);
+          this.actionHandler.select);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Unselect,
-          this.queueUnselectAction);
+          this.actionHandler.unselect);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Undo,
-          this.queueUndoAction);
+          this.actionHandler.undo);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Redo,
-          this.queueRedoAction);
+          this.actionHandler.redo);
 
       // menu navigation
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Up,
-          this.queueUpAction);
+          this.actionHandler.up);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Down,
-          this.queueDownAction);
+          this.actionHandler.down);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Left,
-          this.queueLeftAction);
+          this.actionHandler.left);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Right,
-          this.queueRightAction);
+          this.actionHandler.right);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Top,
-          this.queueTopAction);
+          this.actionHandler.top);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Bottom,
-          this.queueBottomAction);
+          this.actionHandler.bottom);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Previous,
-          this.queuePreviousAction);
+          this.actionHandler.previous);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Next,
-          this.queueNextAction);
+          this.actionHandler.next);
 
-      this.eventbus.unsubscribe(
+      this.unbindFromActionHandler(
           BasicAction.Back,
-          this.queueBackAction);
+          this.actionHandler.back);
 
       super.deactivate();
     }
