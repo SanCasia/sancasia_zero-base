@@ -1,8 +1,7 @@
-
-### Part Three: What About Enemies?
+# Part Three: What About NPCs?
 In this next step we will create a simple artificial opponent. Three new classes and a couple of small changes to the `Battlefield` will be needed to achieve this.
 
-As before, we will implement a factory to handle the creation of our enemies. The `EnemyFactory` is very similar to the above shown `PlayerFactory` and is thus emitted. You can find its source at `demo/hello_world/part3/enemies/enemy_factory.ts`.
+As before, we will implement a factory to handle the creation of our enemies. The `EnemyFactory` is very similar to the earlier shown `PlayerFactory` and is thus emitted. You can find its source at `demo/hello_world/part3/enemies/enemy_factory.ts`.
 
 Second, a system to control the spawning is needed. It will extend `SystemBase` and override the `process` function. The function will then - based on some arbitrary logic - decide how and where the enemies should spawn.
 ```typescript

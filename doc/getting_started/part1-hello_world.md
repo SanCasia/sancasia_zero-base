@@ -1,4 +1,4 @@
-### Part One: Hello World
+# Part One: Hello World
 The first thing you probably want to do is to have something displayed on your screen.
 We will be drawing a triangle in the center of the window.
 

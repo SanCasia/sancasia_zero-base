@@ -1,10 +1,11 @@
-### Part Two: User Input Required
+# Part Two: User Input Required
 This part will be completed soon...  
-We will be working with user input to control the triangle using a derivative of the `InputSystemBase` class.
+We will be working with user input to control the player. For this two main classes need to be added to our existing code. The `Interpreter` is used to unify different types of input devices like keyboard, game pad etc. After the interpretation of the raw input a `ActionSystem` will decide what to do.  
+But...
 
-These features are planned for the next release (v1.1). A release date will not be specified.
+## First, Some Refactoring
+If you plan on building a real and complex game, it is important to organise and structure your code from the very beginning. One change we will need to apply is to fully exploit the potential of the `Scene` class:
 
-If you plan on building a full game, it is important to organise and structure your code from the very beginning. One change we will need to apply is to fully exploit the potential of the `Scene` class:
 ```typescript
 export class Battlefield extends sczCore.SceneBase
 {
@@ -42,7 +43,9 @@ export class Battlefield extends sczCore.SceneBase
   }
 }
 ```
+
 If some of the code above looks familiar, that's because it was copied from the main function which now is way less complicated and looks like this:
+
 ```typescript
 public static main()
 {
@@ -64,6 +67,7 @@ public static main()
 
 In addition, in an effort to further simplify our code, we will start using factories to create entities.  
 The factory pattern is a wildly used programming practice in which the creation of objects or even object structures are hidden behind easy-to-use functions:
+
 ```typescript
 export class PlayerFactory
 {
@@ -119,6 +123,68 @@ export class PlayerFactory
     player.addComponent(sprite);
 
     return player;
+  }
+}
+```
+
+Now that our code is significantly more readable we can start adding some now features.
+
+## Input Interpreter
+Added in Battlefield:
+```typescript
+// local interpreter...
+this.interpreter =
+  new sczBase.DefaultBasicInputInterpreter(game.getEventBus());
+
+```
+Activate and deactivate interpreter (will not be needed in future versions):
+```typescript
+public activate()
+{
+  super.activate();
+  this.interpreter.activate();
+}
+
+
+public deactivate()
+{
+  super.deactivate();
+  this.interpreter.deactivate();
+}
+```
+
+## Action System
+Overriding the desired actions from `BasicActionHandlerBase`:
+```typescript
+export class PlayerActionHandler
+    extends sczBase.BasicActionHandlerBase
+{
+  protected eventbus: sczCore.EventBus;
+
+  public constructor(eventbus: sczCore.EventBus)
+  {
+    super();
+    this.eventbus = eventbus;
+  }
+
+  public up(_: number, [translate]: [sczBase.TranslateComponent])
+  {
+    translate.positionY -= 10;
+  }
+
+  public down(_: number, [translate]: [sczBase.TranslateComponent])
+  {
+    translate.positionY += 10;
+  }
+
+  public left(_: number, [translate]: [sczBase.TranslateComponent])
+  {
+    translate.positionX -= 10;
+  }
+
+  public right(_: number, [translate]: [sczBase.TranslateComponent])
+  {
+    translate.positionX += 10;
   }
 }
 ```
