@@ -1,9 +1,10 @@
-/// <reference path="../../node_modules/sancasia_zero-core/obj/sancasia_zero.core.d.ts" />
+/// <reference path="../../../node_modules/sancasia_zero-core/obj/sancasia_zero.core.d.ts" />
+/// <reference path="./menu_action_interpreter_base.ts" />
 
 namespace sczBase
 {
-  export class DefaultBasicInputInterpreter
-      extends  BasicInputInterpreterBase
+  export class MenuActionInterpreter
+      extends  MenuActionInterpreterBase
   {
     public constructor(eventbus: sczCore.EventBus)
     {
@@ -12,12 +13,14 @@ namespace sczBase
 
     public activate()
     {
+      super.activate();
       document.addEventListener('keyup', this.keyUpInterpreter);
       document.addEventListener('keydown', this.keyDownInterpreter);
     }
 
     public deactivate()
     {
+      super.deactivate();
       document.removeEventListener('keyup', this.keyUpInterpreter);
       document.removeEventListener('keydown', this.keyDownInterpreter);
     }
@@ -29,11 +32,56 @@ namespace sczBase
 
     protected keyUpInterpreter = (event: KeyboardEvent): void =>
     {
+      event.preventDefault();
+
+      // why not switch?
+      /*
+        because "break" exits the switch statement,
+        therefore skipping other meanings of a specific key code.
+        To make it work with `switch` one could
+        A) find something like `continue` instead of `break` (not found)
+        B) instead of sorting by functionality, sorting by key code
+        C) use one swithc per functionality
+      */
+
+      /* B)
+      switch(event.keyCode)
+      {
+        case 19: // pause
+          super.publishMenuAction();
+        case 27: // esc
+          super.publishMenuAction();
+          super.publishReturnAction();
+        case ...
+
+      }
+      */
+
+      /* C)
+      // toggle menu
+      switch(event.keyCode)
+      {
+        case 19:  // pause
+        case 27:  // esc
+        case 80:  // "p"
+          super.publishMenuAction();
+      }
+
+      // return
+      switch(event.keyCode)
+      {
+        case 8:   // backspace
+        case 27:  // esc
+        case 46:  // delete
+          super.publishReturnAction();
+      }
+      */
+
       // menu:
       //  pause, esc, "p"
       if(event.keyCode ==  19 || event.keyCode ==  27 || event.keyCode ==  80)
       {
-        super.publishMenuAction();
+        super.publishCloseMenuAction();
       }
 
       // return:
@@ -41,35 +89,6 @@ namespace sczBase
       if(event.keyCode ==  8 || event.keyCode ==  27 || event.keyCode ==  46)
       {
         super.publishReturnAction();
-      }
-
-      // start:
-      //  enter, space
-      if(event.keyCode ==  13 || event.keyCode ==  32)
-      {
-        super.publishStartAction()
-      }
-
-      // stop:
-      //  backspace, pause, esc, delete, "p"
-      if(event.keyCode ==  8 || event.keyCode ==  19 || event.keyCode ==  27
-          || event.keyCode ==  46 || event.keyCode ==  80)
-      {
-        super.publishStopAction();
-      }
-
-      // quick save:
-      //  "f6"
-      if(event.keyCode ==  117)
-      {
-        super.publishQuickSaveAction();
-      }
-
-      // quick load:
-      //  "f5"
-      if(event.keyCode ==  116)
-      {
-        super.publishQuickLoadAction();
       }
 
       // select:
@@ -148,7 +167,7 @@ namespace sczBase
           || event.altKey && event.keyCode == 37
           || event.ctrlKey && event.keyCode == 37)
       {
-        super.publishPreviousAction();
+        super.publishPreviousMenuAction();
       }
 
       // next:
@@ -156,7 +175,7 @@ namespace sczBase
       if(event.altKey && event.keyCode == 39
           || event.ctrlKey && event.keyCode == 39)
       {
-        super.publishNextAction();
+        super.publishNextMenuAction();
       }
 
 
