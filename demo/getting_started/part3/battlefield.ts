@@ -7,23 +7,39 @@ namespace sczBase.demo.helloWorld.partThree
   {
     public constructor(id: number, game: sczCore.Game)
     {
-      super(id, game.getEventBus());
+      let eventbus = game.getEventBus();
+      super(id, eventbus);
 
-      // create the canvas render system
-      //  the render system is responsible for our drawing jobs
-      //  it expects the context of a canvas as the first argument
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
-      //  and a translate service as the second
       let translateService = new TranslateService(game);
       let renderSystem =
           new CanvasRenderSystem(
               context,
               translateService,
-              game.getEventBus());
-
-      // add the render system to the scene
+              eventbus);
       this.addProp(renderSystem);
+
+      let velocitySystem = new sczBase.VelocitySystem(eventbus);
+      this.addProp(velocitySystem);
+
+      let interpreter = new sczBase.GamePlayActionInterpreter(eventbus);
+      this.addProp(interpreter);
+
+      let actionSystem = new PlayerActionSystem(eventbus);
+      this.addProp(actionSystem);
+
+      // create the player factory
+      let playerFactory = new PlayerFactory(
+          "players/player.svg",
+          {x: 200, y:200});
+
+      // spawn the player
+      let playerId = 0;
+      let playerPosition = {x: 200, y: 700}
+      let systems = [actionSystem, velocitySystem, renderSystem];
+      let player = playerFactory.create(playerId, playerPosition, systems);
+      game.addEntity(player);
 
 
       // create the enemy movement system and add it to the scene
@@ -43,17 +59,6 @@ namespace sczBase.demo.helloWorld.partThree
           [renderSystem, enemyMovementSystem],
            enemyFactory);
       this.addProp(enemySpawnSystem);
-
-
-      // create the player factory
-      let playerFactory = new PlayerFactory(
-          "players/player.svg",
-          {x: 200, y:200});
-
-      // spawn the player
-      let player = playerFactory.create(0, {x: 200, y: 700});
-      game.addEntity(player);
-      renderSystem.registerEntity(player);
     }
   }
 }
