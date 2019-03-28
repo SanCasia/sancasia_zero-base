@@ -23,12 +23,12 @@ namespace sczBase.demo.helloWorld.partThree
               game.getEventBus());
 
       // add the render system to the scene
-      this.addSystem(renderSystem);
+      this.addProp(renderSystem);
 
 
       // create the enemy movement system and add it to the scene
       let enemyMovementSystem = new EnemyMovementSystem(game.getEventBus());
-      this.addSystem(enemyMovementSystem);
+      this.addProp(enemyMovementSystem);
 
 
       // create the enemy factory
@@ -40,9 +40,9 @@ namespace sczBase.demo.helloWorld.partThree
       //  which is responsible for spawning enemies
       let enemySpawnSystem = new EnemySpawnSystem(
           game,
-          this.getId(),
+          [renderSystem, enemyMovementSystem],
            enemyFactory);
-      this.addSystem(enemySpawnSystem);
+      this.addProp(enemySpawnSystem);
 
 
       // create the player factory

@@ -6,13 +6,13 @@ namespace sczBase.demo.helloWorld.partThree
   export class EnemySpawnSystem extends sczCore.SystemBase
   {
     private game: sczCore.Game;
-    private sceneId: number;
+    private systems: sczCore.System[];
     private enemyFactory: EnemyFactory;
     private lanes: Array<{position: number, cooldown: number}>;
 
     constructor(
       game: sczCore.Game,
-      sceneId: number,
+      systems: sczCore.System[],
       enemyFactory: EnemyFactory)
     {
         super(
@@ -23,7 +23,7 @@ namespace sczBase.demo.helloWorld.partThree
           sczCore.EngineEvent.PreComputation);
 
         this.game = game;
-        this.sceneId = sceneId;
+        this.systems = systems;
         this.enemyFactory = enemyFactory;
 
         // define possible lanes
@@ -91,18 +91,12 @@ namespace sczBase.demo.helloWorld.partThree
         // add the enemy to the game
         this.game.addEntity(enemy);
         // register enemy to the appropriate systems
-        this.game.registerEntity(
-            this.sceneId,
-            EnemySpawnSystem,
-            enemy.getId());
-        this.game.registerEntity(
-          this.sceneId,
-          EnemyMovementSystem,
-          enemy.getId());
-        this.game.registerEntity(
-            this.sceneId,
-            CanvasRenderSystem,
-            enemy.getId());
+        for(let system of this.systems)
+        {
+          system.registerEntity(enemy);
+        }
+
+        this.registerEntity(enemy);
       }
     }
 
@@ -110,18 +104,12 @@ namespace sczBase.demo.helloWorld.partThree
     private despawn(entityId: number): void
     {
       // deregister enemy from its systems
-      this.game.deregisterEntity(
-          this.sceneId,
-          EnemySpawnSystem,
-          entityId);
-      this.game.deregisterEntity(
-          this.sceneId,
-          EnemyMovementSystem,
-          entityId);
-      this.game.deregisterEntity(
-          this.sceneId,
-          CanvasRenderSystem,
-          entityId);
+      for(let system of this.systems)
+      {
+        system.deregisterEntity(entityId);
+      }
+
+      this.deregisterEntity(entityId);
       // remove enemy from the game
       this.game.removeEntity(entityId);
     }

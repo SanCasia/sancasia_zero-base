@@ -8,6 +8,7 @@ namespace sczBase.demo.render
     public static Main(): void
     {
       let game = new sczCore.Game();
+      let eventBus = game.getEventBus();
       let translateService = new TranslateService(game);
 
       let scene = new sczCore.SceneBase(0, game.getEventBus());
@@ -16,17 +17,15 @@ namespace sczBase.demo.render
       // add render system
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
-      game.addSystem(
-          scene.getId(),
-          new CanvasRenderSystem(
+      let renderSystem = new CanvasRenderSystem(
               context, translateService,
-              game.getEventBus()));
+              eventBus);
+      scene.addProp(renderSystem);
 
       // add parts system
-      game.addSystem(
-          scene.getId(),
-          new PartSystem(
-              game.getEventBus()));
+      let partSystem = new PartSystem(
+              game.getEventBus());
+      scene.addProp(partSystem);
 
       // define common values
       let centerX = document.body.clientWidth / 2;
@@ -54,16 +53,10 @@ namespace sczBase.demo.render
         game.addEntity(master);
 
         // register part in render system
-        game.registerEntity(
-            scene.getId(),
-            CanvasRenderSystem,
-            master.getId());
+        renderSystem.registerEntity(master);
 
         // register part in part system
-        game.registerEntity(
-            scene.getId(),
-            PartSystem,
-            master.getId());
+        partSystem.registerEntity(master);
 
         masters.push(master.getId());
       }
@@ -89,16 +82,11 @@ namespace sczBase.demo.render
           game.addEntity(part);
 
           // register part to render system
-          game.registerEntity(
-              scene.getId(),
-              CanvasRenderSystem,
-              part.getId());
+          // register part in render system
+          renderSystem.registerEntity(part);
 
-          // register part to part system
-          game.registerEntity(
-              scene.getId(),
-              PartSystem,
-              part.getId());
+          // register part in part system
+          partSystem.registerEntity(part);
         }
       }
 

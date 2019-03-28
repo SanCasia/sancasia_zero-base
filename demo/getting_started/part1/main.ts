@@ -28,11 +28,9 @@ namespace sczBase.demo.helloWorld.partOne
               translateService,
               game.getEventBus());
 
-      // add the render system to the game
+      // add the render system to the scene
       //  the render system is responsible for our drawing jobs
-      game.addSystem(
-          scene.getId(),
-          renderSystem);
+      scene.addProp(renderSystem);
 
       // Game Specific Code
       // defining the triangle
@@ -74,10 +72,7 @@ namespace sczBase.demo.helloWorld.partOne
       game.addEntity(triangle);
 
       // register the triangle to the render system
-      game.registerEntity(
-          scene.getId(),
-          CanvasRenderSystem,
-          triangle.getId());
+      renderSystem.registerEntity(triangle);
 
       // lets start the engine!
       game.start();
