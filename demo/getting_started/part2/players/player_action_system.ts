@@ -13,16 +13,21 @@ namespace sczBase.demo.helloWorld.partTwo
       super([sczBase.VelocityComponent], eventbus);
     }
 
+    // when "startMoveUp" ...
     public startMoveUp(_: number, [velocity]: [sczBase.VelocityComponent])
     {
+      // set velocity in the Y direction to ...
       velocity.velocityY = -100;
     }
 
+    // when "stopMoveUp"
     public stopMoveUp(_: number, [velocity]: [sczBase.VelocityComponent])
     {
+      // set velocity in the Y direction to ...
       velocity.velocityY = 0;
     }
 
+    // etc.
     public startMoveDown(_: number, [velocity]: [sczBase.VelocityComponent])
     {
       velocity.velocityY = 50;

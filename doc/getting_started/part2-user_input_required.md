@@ -1,190 +1,64 @@
 # Part Two: User Input Required
-This part will be completed soon...  
-We will be working with user input to control the player. For this two main classes need to be added to our existing code. The `Interpreter` is used to unify different types of input devices like keyboard, game pad etc. After the interpretation of the raw input a `ActionSystem` will decide what to do.  
-But...
+A computer game is no fun without the possibility to influence what is happening. To allow that, we will be working with user input and implement the ability to control the player. Three things are needed to make this work smoothly. An `Interpreter` is used to unify different types of input devices like keyboard, game pad etc. After the interpretation of the raw input the unified action are communicated to an `ActionSystem`. We will create our own `PlayerActionSystem` to implement movement. We will also be using the supplied `VelocitySystem` and `VelocityComponent` to record and propagate the state changes.
 
-## First, Some Refactoring
-If you plan on building a real and complex game, it is important to organise and structure your code from the very beginning. One change we will need to apply is to fully exploit the potential of the `Scene` class:
-
+## Velocity System
+To use a system we have to add it to our `Scene`. This should be done in our implementation `Battlefield` as follows.  
 ```typescript
-export class Battlefield extends sczCore.SceneBase
-{
-  public constructor(id: number, game: sczCore.Game)
-  {
-    super(id, game.getEventBus());
-
-
-    // create the canvas render system
-    //  the render system is responsible for our drawing jobs
-    //  it expects the context of a canvas as the first argument
-    let canvas = <HTMLCanvasElement> document.getElementById("canvas");
-    let context = canvas.getContext('2d');
-    //  and a translate service as the second
-    let translateService = new TranslateService(game);
-    let renderSystem =
-        new CanvasRenderSystem(
-            context,
-            translateService,
-            game.getEventBus());
-
-    // add the render system to this scene
-    this.addSystem(renderSystem);
-
-
-    // create the player factory (will be explained in a bit)
-    let playerFactory = new PlayerFactory(
-        "players/player.svg",
-        {x: 200, y:200});
-
-    // spawn the player
-    let player = playerFactory.create(0, {x: 200, y: 700});
-    game.addEntity(player);
-    renderSystem.registerEntity(player);
-  }
-}
+// velocity system: handles movement based on velocity component
+let velocitySystem = new sczBase.VelocitySystem(eventbus);
+this.addProp(velocitySystem);
 ```
-
-If some of the code above looks familiar, that's because it was copied from the main function which now is way less complicated and looks like this:
-
-```typescript
-public static main()
-{
-  // create the new game object
-  // this is initialising a new event bus as well as a new engine
-  let game = new sczCore.Game();
-
-  // create the scene in which the triangle will exist
-  let battlefield = new Battlefield(0, game);
-  // add the scene to the game
-  game.addScene(battlefield);
-
-  // lets start the engine!
-  game.start();
-  // ... and activate the scene!
-  game.activateScene(battlefield.getId());
-}
-```
-
-In addition, in an effort to further simplify our code, we will start using factories to create entities.  
-The factory pattern is a wildly used programming practice in which the creation of objects or even object structures are hidden behind easy-to-use functions:
-
-```typescript
-export class PlayerFactory
-{
-  private spriteSrc: string;
-  private spriteDimensions: {x: number, y: number};
-
-  public constructor(
-      spriteSrc: string,
-      spriteDimensions: {x: number, y: number})
-  {
-    this.spriteSrc = spriteSrc;
-    this.spriteDimensions = spriteDimensions;
-  }
-
-  public create(
-      id: number,
-      position: {x: number, y: number},
-      ): sczCore.Entity
-  {
-    // defining the player entity
-    let player = new sczCore.Entity(id);
-    let translate = new sczBase.TranslateComponent();
-    let sprite = new sczBase.SpriteComponent();
-
-    // define the position
-    translate.positionX = position.x;
-    translate.positionY = position.y;
-
-    // define the size
-    translate.sizeX = 1;
-    translate.sizeY = 1;
-
-    // define rotation
-    translate.rotation = 0;
-
-    // define center
-    translate.centerX = 0;
-    translate.centerY = 0;
-
-    // define the parent
-    translate.parentId = -1;
-
-    // define sprite
-    sprite.sprite = new Image();
-    sprite.sprite.src = this.spriteSrc;
-
-    // inform about original dimensions of sprite
-    sprite.sizeX = this.spriteDimensions.x;
-    sprite.sizeY = this.spriteDimensions.y;
-
-    // add components to entity
-    player.addComponent(translate);
-    player.addComponent(sprite);
-
-    return player;
-  }
-}
-```
-
-Now that our code is significantly more readable we can start adding some now features.
+The `VelocitySystem` is a simple but often needed `System` which can be found in `sczBase`. All it does is updating a `TranslateComponent` based on the values in a `VelocityComponent`. You can read the code if you are interested in knowing how to write your own `System`.
 
 ## Input Interpreter
-Added in Battlefield:
+Adding an input interpreter is also very easy. All we need to do is selecting the appropriate class from `sczBase` and add it as prop to our `Battlefield`.
+We will want to use the `GamePlayActionInterpreter` because it implements the needed input interpretation to move our player.
 ```typescript
-// local interpreter...
-this.interpreter =
-  new sczBase.DefaultBasicInputInterpreter(game.getEventBus());
-
-```
-Activate and deactivate interpreter (will not be needed in future versions):
-```typescript
-public activate()
-{
-  super.activate();
-  this.interpreter.activate();
-}
-
-
-public deactivate()
-{
-  super.deactivate();
-  this.interpreter.deactivate();
-}
+// default game play action interpreter: maps input to action
+// e.g. "W" -> move up, spacebar -> jump
+let interpreter = new sczBase.GamePlayActionInterpreter(eventbus);
+this.addProp(interpreter);
 ```
 
 ## Action System
-Overriding the desired actions from `BasicActionHandlerBase`:
+The most complicated part is the implementation of our own `ActionSystem`.  
+Luckily, `sczBase` provides a easy to use base implementation which we can `extend` and finally override the functions of interest.  
+
 ```typescript
-export class PlayerActionHandler
-    extends sczBase.BasicActionHandlerBase
+class PlayerActionSystem
+    extends sczBase.GamePlayActionSystemBase
 {
   protected eventbus: sczCore.EventBus;
 
   public constructor(eventbus: sczCore.EventBus)
   {
-    super();
-    this.eventbus = eventbus;
+    super([sczBase.VelocityComponent], eventbus);
   }
 
-  public up(_: number, [translate]: [sczBase.TranslateComponent])
+  // when "startMoveUp" ...
+  public startMoveUp(_: number, [velocity]: [sczBase.VelocityComponent])
   {
-    translate.positionY -= 10;
+    // set velocity in the Y direction to ...
+    velocity.velocityY = -100;
   }
 
-  public down(_: number, [translate]: [sczBase.TranslateComponent])
+  // when "stopMoveUp"
+  public stopMoveUp(_: number, [velocity]: [sczBase.VelocityComponent])
   {
-    translate.positionY += 10;
+    // set velocity in the Y direction to ...
+    velocity.velocityY = 0;
   }
-
-  public left(_: number, [translate]: [sczBase.TranslateComponent])
-  {
-    translate.positionX -= 10;
-  }
-
-  public right(_: number, [translate]: [sczBase.TranslateComponent])
-  {
-    translate.positionX += 10;
-  }
+  // etc.
 }
+```
+
+## Update Spawn
+The only thing left to do is to make sure our player is registered with all the necessary systems.  A small change to the `PlayerFactory`s `create` call is enough.
+```typescript
+// spawn the player
+let playerId = 0;
+let playerPosition = {x: 200, y: 700}
+let systems = [renderSystem, actionSystem, velocitySystem];
+let player = playerFactory.create(playerId, playerPosition, systems);
+game.addEntity(player);
 ```

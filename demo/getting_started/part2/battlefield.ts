@@ -10,6 +10,7 @@ namespace sczBase.demo.helloWorld.partTwo
       let eventbus = game.getEventBus();
       super(id, eventbus);
 
+      // same old canvas rendering system
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
       let translateService = new TranslateService(game);
@@ -20,24 +21,28 @@ namespace sczBase.demo.helloWorld.partTwo
               eventbus);
       this.addProp(renderSystem);
 
+      // velocity system: handles movement based on velocity component
       let velocitySystem = new sczBase.VelocitySystem(eventbus);
       this.addProp(velocitySystem);
 
+      // default game play action interpreter: maps input to action
+      // e.g. "W" -> move up, spacebar -> jump
       let interpreter = new sczBase.GamePlayActionInterpreter(eventbus);
       this.addProp(interpreter);
 
+      // our action system which handels actions like jump or move up
       let actionSystem = new PlayerActionSystem(eventbus);
       this.addProp(actionSystem);
 
       // create the player factory
-      let playerFactory = new PlayerFactory(
-          "players/player.svg",
-          {x: 200, y:200});
+      let playerGraphic = "players/player.svg";
+      let playerGraphicSize = {x: 200, y:200};
+      let playerFactory = new PlayerFactory(playerGraphic, playerGraphicSize);
 
       // spawn the player
       let playerId = 0;
       let playerPosition = {x: 200, y: 700}
-      let systems = [actionSystem, velocitySystem, renderSystem];
+      let systems = [renderSystem, actionSystem, velocitySystem];
       let player = playerFactory.create(playerId, playerPosition, systems);
       game.addEntity(player);
     }

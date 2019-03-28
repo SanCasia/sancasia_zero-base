@@ -49,6 +49,7 @@ namespace sczBase.demo.helloWorld.partTwo
       let velocity = new sczBase.VelocityComponent();
       player.addComponent(velocity);
 
+      // register entity to all systems
       for(let system of systems)
       {
         system.registerEntity(player);
