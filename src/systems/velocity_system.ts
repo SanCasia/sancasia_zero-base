@@ -17,11 +17,12 @@ namespace sczBase
       deltaTime: number,
       [translate, velocity]: [TranslateComponent, VelocityComponent]): void
     {
-      velocity.velocityX += velocity.accelerationX * deltaTime;
-      translate.positionX += velocity.velocityX;
+      let deltaSeconds = deltaTime / 1000;
+      velocity.velocityX += velocity.accelerationX * deltaSeconds;
+      translate.positionX += velocity.velocityX * deltaSeconds;
 
-      velocity.velocityY += velocity.accelerationY * deltaTime;
-      translate.positionY += velocity.velocityY;
+      velocity.velocityY += velocity.accelerationY * deltaSeconds;
+      translate.positionY += velocity.velocityY * deltaSeconds;
     }
   }
 }
