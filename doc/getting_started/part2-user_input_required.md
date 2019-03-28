@@ -62,3 +62,7 @@ let systems = [renderSystem, actionSystem, velocitySystem];
 let player = playerFactory.create(playerId, playerPosition, systems);
 game.addEntity(player);
 ```
+
+## Result
+After saving and compiling:  
+![part two demo gif](part2.gif)
