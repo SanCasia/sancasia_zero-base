@@ -24,7 +24,7 @@ namespace sczBase.demo.helloWorld.partTwo
               game.getEventBus());
 
       // add the render system to this scene
-      this.addSystem(renderSystem);
+      this.addProp(renderSystem);
 
       // create the player factory
       let playerFactory = new PlayerFactory(
