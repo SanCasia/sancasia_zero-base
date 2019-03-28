@@ -5,44 +5,29 @@ namespace sczBase.demo.helloWorld.partTwo
 {
   export class Battlefield extends sczCore.SceneBase
   {
-    private interpreter: sczBase.BasicInputInterpreterBase;
-
     public constructor(id: number, game: sczCore.Game)
     {
-      super(id, game.getEventBus());
+      let eventbus = game.getEventBus();
+      super(id, eventbus);
 
-      // create the canvas render system
-      //  the render system is responsible for our drawing jobs
-      //  it expects the context of a canvas as the first argument
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
-      //  and a translate service as the second
       let translateService = new TranslateService(game);
       let renderSystem =
           new CanvasRenderSystem(
               context,
               translateService,
-              game.getEventBus());
-
-      // add the render system to this scene
+              eventbus);
       this.addProp(renderSystem);
 
-      // local interpreter...
-      this.interpreter =
-        new sczBase.DefaultBasicInputInterpreter(game.getEventBus());
+      let velocitySystem = new sczBase.VelocitySystem(eventbus);
+      this.addProp(velocitySystem);
 
-      // action handler
-      let handler = new PlayerActionHandler(
-        game.getEventBus());
+      let interpreter = new sczBase.GamePlayActionInterpreter(eventbus);
+      this.addProp(interpreter);
 
-      // BAS
-      let actionSystem = new sczBase.BasicActionSystem(
-        handler,
-        [sczBase.TranslateComponent],
-        game.getEventBus(),
-        sczCore.EngineEvent.PreComputation);
-
-      this.addSystem(actionSystem);
+      let actionSystem = new PlayerActionSystem(eventbus);
+      this.addProp(actionSystem);
 
       // create the player factory
       let playerFactory = new PlayerFactory(
@@ -50,24 +35,11 @@ namespace sczBase.demo.helloWorld.partTwo
           {x: 200, y:200});
 
       // spawn the player
-      let player = playerFactory.create(0, {x: 200, y: 700});
+      let playerId = 0;
+      let playerPosition = {x: 200, y: 700}
+      let systems = [actionSystem, velocitySystem, renderSystem];
+      let player = playerFactory.create(playerId, playerPosition, systems);
       game.addEntity(player);
-
-      actionSystem.registerEntity(player);
-      renderSystem.registerEntity(player);
-    }
-
-    public activate()
-    {
-      super.activate();
-      this.interpreter.activate();
-    }
-
-
-    public deactivate()
-    {
-      super.deactivate();
-      this.interpreter.deactivate();
     }
   }
 }
