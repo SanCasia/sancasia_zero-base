@@ -3,7 +3,7 @@
 
 namespace sczBase.demo.helloWorld.partThree
 {
-  export class EnemyFactory
+  export class NpcFactory
   {
     private spriteSrc: string;
     private spriteDimensions: {x: number, y: number};
@@ -19,44 +19,45 @@ namespace sczBase.demo.helloWorld.partThree
     public create(
         id: number,
         position: {x: number, y: number},
+        velocityY: number,
+        systems: Array<sczCore.System>
         ): sczCore.Entity
     {
-      // defining the enemy entity
-      let enemy = new sczCore.Entity(id);
-      let translate = new sczBase.TranslateComponent();
-      let sprite = new sczBase.SpriteComponent();
+      // defining the npc entity
+      let npc = new sczCore.Entity(id);
 
-      // define the position
+      let translate = new TranslateComponent();
       translate.positionX = position.x;
       translate.positionY = position.y;
-
-      // define the size
       translate.sizeX = 0.25;
       translate.sizeY = 0.25;
-
-      // define rotation
       translate.rotation = 180;
-
-      // define center
       translate.centerX = this.spriteDimensions.x/2;
       translate.centerY = this.spriteDimensions.y/2;
-
-      // define the parent
       translate.parentId = -1;
+      npc.addComponent(translate);
 
-      // define sprite
+      let sprite = new SpriteComponent();
       sprite.sprite = new Image();
       sprite.sprite.src = this.spriteSrc;
-
-      // inform about original dimensions of sprite
       sprite.sizeX = this.spriteDimensions.x;
       sprite.sizeY = this.spriteDimensions.y;
+      npc.addComponent(sprite);
 
-      // add components to entity
-      enemy.addComponent(translate);
-      enemy.addComponent(sprite);
+      let velocity = new VelocityComponent();
+      velocity.velocityY = velocityY;
+      npc.addComponent(velocity);
 
-      return enemy;
+      let entity = new EntityComponent();
+      entity.reference = npc;
+      npc.addComponent(entity)
+
+      for(let system of systems)
+      {
+        system.registerEntity(npc);
+      }
+
+      return npc;
     }
   }
 }

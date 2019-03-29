@@ -7,19 +7,11 @@ namespace sczBase.demo.helloWorld.partThree
   {
     public static main()
     {
-      // create the new game object
-      // this is initializing a new event bus as well as a new engine
       let game = new sczCore.Game();
+      let highway = new Highway(0, game);
 
-      // create the scene in which the triangle will exist
-      let battlefield = new Battlefield(0, game);
-      // add the scene to the game
-      game.addScene(battlefield);
-
-      // lets start the engine!
       game.start();
-      // ... and activate the scene!
-      game.activateScene(battlefield.getId());
+      highway.activate();
     }
   }
 }

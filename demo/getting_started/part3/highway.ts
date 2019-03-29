@@ -3,7 +3,7 @@
 
 namespace sczBase.demo.helloWorld.partThree
 {
-  export class Battlefield extends sczCore.SceneBase
+  export class Highway extends sczCore.SceneBase
   {
     public constructor(id: number, game: sczCore.Game)
     {
@@ -30,34 +30,33 @@ namespace sczBase.demo.helloWorld.partThree
       this.addProp(actionSystem);
 
       // create the player factory
-      let playerFactory = new PlayerFactory(
-          "players/player.svg",
-          {x: 200, y:200});
+      let playerGraphic = "players/player.svg";
+      let playerGraphicSize = {x: 200, y:200};
+      let playerFactory = new PlayerFactory(playerGraphic, playerGraphicSize);
 
       // spawn the player
       let playerId = 0;
       let playerPosition = {x: 200, y: 700}
-      let systems = [actionSystem, velocitySystem, renderSystem];
-      let player = playerFactory.create(playerId, playerPosition, systems);
+      let playerSystems = [actionSystem, velocitySystem, renderSystem];
+      let player = playerFactory.create(
+        playerId, playerPosition, playerSystems);
       game.addEntity(player);
 
 
-      // create the enemy movement system and add it to the scene
-      let enemyMovementSystem = new EnemyMovementSystem(game.getEventBus());
-      this.addProp(enemyMovementSystem);
-
+      let npcSystems = Array<sczCore.System>(renderSystem, velocitySystem);
+      let npcDespawnSystem = new NpcDespawnSystem(eventbus, npcSystems)
+      this.addProp(npcDespawnSystem);
+      npcSystems.push(npcDespawnSystem);
 
       // create the enemy factory
-      let enemyFactory = new EnemyFactory(
-          "enemies/enemy.svg",
-          {x: 200, y:200});
+      let npcGraphic = "npcs/npc.svg";
+      let npcGraphicSize = {x: 200, y:200};
+      let npcFactory = new NpcFactory(npcGraphic, npcGraphicSize);
 
-      // create the enemy spawn system
+      // create the enemy spawn prop
       //  which is responsible for spawning enemies
-      let enemySpawnSystem = new EnemySpawnSystem(
-          game,
-          [renderSystem, enemyMovementSystem],
-           enemyFactory);
+      let enemySpawnSystem = new NpcSpawnProp(
+        eventbus, npcSystems, npcFactory);
       this.addProp(enemySpawnSystem);
     }
   }
