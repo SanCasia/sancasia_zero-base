@@ -17,7 +17,7 @@ namespace sczBase.demo.helloWorld.partTwo
     public startMoveUp(_: number, [velocity]: [sczBase.VelocityComponent])
     {
       // set velocity in the Y direction to ...
-      velocity.velocityY = -100;
+      velocity.velocityY = -200;
     }
 
     // when "stopMoveUp"
@@ -30,7 +30,7 @@ namespace sczBase.demo.helloWorld.partTwo
     // etc.
     public startMoveDown(_: number, [velocity]: [sczBase.VelocityComponent])
     {
-      velocity.velocityY = 50;
+      velocity.velocityY = 200;
     }
 
     public stopMoveDown(_: number, [velocity]: [sczBase.VelocityComponent])
@@ -40,7 +40,7 @@ namespace sczBase.demo.helloWorld.partTwo
 
     public startMoveLeft(_: number, [velocity]: [sczBase.VelocityComponent])
     {
-      velocity.velocityX = -50;
+      velocity.velocityX = -200;
     }
 
     public stopMoveLeft(_: number, [velocity]: [sczBase.VelocityComponent])
@@ -50,7 +50,7 @@ namespace sczBase.demo.helloWorld.partTwo
 
     public startMoveRight(_: number, [velocity]: [sczBase.VelocityComponent])
     {
-      velocity.velocityX = 50;
+      velocity.velocityX = 200;
     }
 
     public stopMoveRight(_: number, [velocity]: [sczBase.VelocityComponent])

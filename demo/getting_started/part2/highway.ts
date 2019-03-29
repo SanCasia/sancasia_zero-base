@@ -3,7 +3,7 @@
 
 namespace sczBase.demo.helloWorld.partTwo
 {
-  export class Battlefield extends sczCore.SceneBase
+  export class Highway extends sczCore.SceneBase
   {
     public constructor(id: number, game: sczCore.Game)
     {

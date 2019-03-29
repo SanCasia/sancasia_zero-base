@@ -10,10 +10,10 @@ namespace sczBase.demo.helloWorld.partTwo
       let game = new sczCore.Game();
 
       // create the scene in which the triangle will exist
-      let battlefield = new Battlefield(0, game);
+      let highway = new Highway(0, game);
 
       game.start();
-      battlefield.activate();
+      highway.activate();
     }
   }
 }
