@@ -29,7 +29,7 @@ namespace sczBase
         eventbus);
     }
 
-    protected processEntity(
+    protected processEvent(
       deltaTime: number,
       components: sczCore.Component[],
       actionEvent: sczCore.ActionEvent): void
