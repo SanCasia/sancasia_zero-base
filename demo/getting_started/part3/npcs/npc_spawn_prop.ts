@@ -19,29 +19,21 @@ namespace sczBase.demo.helloWorld.partThree
     }
   }
 
-  export class NpcSpawnProp implements sczCore.Prop
+  export class NpcSpawnProp extends sczCore.PropBase
   {
-    private _isActive: boolean;
-    private eventbus: sczCore.EventBus;
-    private event: sczCore.EngineEvent;
     private systems: sczCore.System[];
-    private enemyFactory: NpcFactory;
+    private npcFactory: NpcFactory;
     private lanes: Array<Lane>;
 
-    public get isActive(): boolean
-    {
-      return this._isActive;
-    }
 
     constructor(
       eventbus: sczCore.EventBus,
       systems: sczCore.System[],
-      enemyFactory: NpcFactory)
+      npcFactory: NpcFactory)
     {
-      this.eventbus = eventbus;
+      super(eventbus, sczCore.EngineEvent.PostComputation)
       this.systems = systems;
-      this.enemyFactory = enemyFactory;
-      this.event = sczCore.EngineEvent.PostComputation
+      this.npcFactory = npcFactory;
 
       // define possible lanes
       this.lanes = [
@@ -51,17 +43,17 @@ namespace sczBase.demo.helloWorld.partThree
         new Lane(350, 200)];
     }
 
-    public process = (deltaTime: number): void =>
+    public process(deltaTime: number): void
     {
-      // spawn chance: in avarage once a second
+      // spawn chance: on average once a second
       if(Math.random() * 1000 < deltaTime)
       {
-        // spawn enemy
+        // spawn npc
         this.spawn();
       }
     }
 
-    // spawns an enemy in a random lane
+    // spawns an npc in a random lane
     private spawn(): void
     {
       // lane selection
@@ -76,27 +68,15 @@ namespace sczBase.demo.helloWorld.partThree
         // reset cooldwon counter
         lane.lastItem = now;
 
-        // create enemy using a dedicated factory
+        // create npc using a dedicated factory
         let id = Math.floor(Math.random() * 10**12);
         let position = {x: lane.position, y: -100};
-        this.enemyFactory.create(
+        this.npcFactory.create(
           id,
           position,
           lane.velocity,
           this.systems);
       }
-    }
-
-    public activate(): void
-    {
-      this.eventbus.subscribe(this.event, this.process);
-      this._isActive = true;
-    }
-
-    public deactivate(): void
-    {
-      this.eventbus.unsubscribe(this.event, this.process);
-      this._isActive = false;
     }
   }
 }

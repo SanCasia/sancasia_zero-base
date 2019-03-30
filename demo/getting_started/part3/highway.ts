@@ -48,16 +48,16 @@ namespace sczBase.demo.helloWorld.partThree
       this.addProp(npcDespawnSystem);
       npcSystems.push(npcDespawnSystem);
 
-      // create the enemy factory
+      // create the npc factory
       let npcGraphic = "npcs/npc.svg";
       let npcGraphicSize = {x: 200, y:200};
       let npcFactory = new NpcFactory(npcGraphic, npcGraphicSize);
 
-      // create the enemy spawn prop
-      //  which is responsible for spawning enemies
-      let enemySpawnSystem = new NpcSpawnProp(
+      // create the npc spawn prop
+      //  which is responsible for spawning NPCs
+      let npcSpawnSystem = new NpcSpawnProp(
         eventbus, npcSystems, npcFactory);
-      this.addProp(enemySpawnSystem);
+      this.addProp(npcSpawnSystem);
     }
   }
 }

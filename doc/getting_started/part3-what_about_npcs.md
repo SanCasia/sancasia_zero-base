@@ -1,160 +1,150 @@
 # Part Three: What About NPCs?
-In this next step we will create a simple artificial opponent. Three new classes and a couple of small changes to the `Battlefield` will be needed to achieve this.
+In this next step we will create a simple NPC. Three new classes and a couple of small changes to the `Highway` will be needed to achieve this.
 
-As before, we will implement a factory to handle the creation of our enemies. The `EnemyFactory` is very similar to the earlier shown `PlayerFactory` and is thus emitted. You can find its source at `demo/hello_world/part3/enemies/enemy_factory.ts`.
+## Factory
+As before, we will implement a factory to handle the creation of our NPCs. The `NpcFactory` is very similar to the earlier shown `PlayerFactory` and is thus emitted. You can find its source at `demo/hello_world/part3/npc/npc_factory.ts`.
 
-Second, a system to control the spawning is needed. It will extend `SystemBase` and override the `process` function. The function will then - based on some arbitrary logic - decide how and where the enemies should spawn.
+## Spawning
+Second, a prop to control the spawning is needed. It will extend `PropBase` and write a `process` function. The function will then - based on some arbitrary logic - decide how and where the NPCs should spawn.
+
+But first, let us create a helper class for `Lane` management:
+
 ```typescript
-export class EnemySpawnSystem extends sczCore.SystemBase
+class Lane
 {
-  private game: sczCore.Game;
-  private sceneId: number;
-  private enemyFactory: EnemyFactory;
-  private lanes: Array<{position: number, cooldown: number}>;
+  public position: number;
+  public velocity: number;
+  public cooldown: number;
+  public lastItem: number;
 
-  constructor(
-    game: sczCore.Game,
-    sceneId: number,
-    enemyFactory: EnemyFactory)
+  constructor(position: number, velocity: number)
   {
-      super(
-        // define what we expect enemies to consist of
-        [TranslateComponent],
-        game.getEventBus(),
-        // define when this system should be executed
-        sczCore.EngineEvent.PreComputation);
-
-      this.game = game;
-      this.sceneId = sceneId;
-      this.enemyFactory = enemyFactory;
-
-      // define possible lanes
-      this.lanes = [
-          {position:  50, cooldown: 0},
-          {position: 150, cooldown: 0},
-          {position: 250, cooldown: 0},
-          {position: 350, cooldown: 0}];
-  }
-
-  public process = (deltaTime: number): void =>
-  {
-    if(this.entities.size < 10)
-    {
-      // spawn chance: in average once a second
-      if(Math.random() * 1000 < deltaTime)
-      {
-        // spawn enemy
-        this.spawn();
-      }
-    }
-
-    // continue to process registered entities
-    for(let entity of this.entities.values())
-    {
-      let cache = <[TranslateComponent]> entity.getCache(this);
-      this.processEntity(deltaTime, cache, entity.getId());
-      entity.updateCache(this, cache);
-    };
-  }
-
-  protected processEntity(
-    _: number,
-    [translate]: [TranslateComponent],
-    entityId?: number): void
-  {
-    // check if out of view
-    if(translate.position.y > 900)
-    {
-      // despawn enemy
-      this.despawn(entityId);
-    }
+    this.position = position;
+    this.velocity = velocity;
+    this.cooldown = 1000 * (500 / velocity);
+    this.lastItem = 0;
   }
 }
 ```
-The spawning logic is implemented to choose a random lane as well as to respect a certain "safety distance".
+
+Our `NpcSpawnProp` looks as follows:
 ```typescript
-...
+class NpcSpawnProp extends sczCore.PropBase
+{
+  private systems: sczCore.System[];
+  private npcFactory: NpcFactory;
+  private lanes: Array<Lane>;
 
-  // spawns an enemy in a random lane
-  private spawn(): void
+
+  constructor(
+    eventbus: sczCore.EventBus,
+    systems: sczCore.System[],
+    npcFactory: NpcFactory)
   {
-    // lane selection
-    let laneNumber = Math.round(Math.random() * 3);
-    let lane = this.lanes[laneNumber];
+    super(eventbus, sczCore.EngineEvent.PostComputation)
+    this.systems = systems;
+    this.npcFactory = npcFactory;
 
-    // cooldown: max one spawn per lane per second
-    let now = new Date().getTime()
-    let delta = now - lane.cooldown;
-    if(delta > 1000)
+    // define possible lanes
+    this.lanes = [
+      new Lane(50,  100),
+      new Lane(150, 150),
+      new Lane(250, 150),
+      new Lane(350, 200)];
+  }
+
+  public process(deltaTime: number): void
+  {
+    // spawn chance: on average once a second
+    if(Math.random() * 1000 < deltaTime)
     {
-      // reset cooldwon counter
-      lane.cooldown = now;
-
-      // create enemy using a dedicated factory
-      let id = Math.floor(Math.random() * 10**12);
-      let enemy = this.enemyFactory.create(
-          id, {x: lane.position, y: -100});
-
-      // add the enemy to the game
-      this.game.addEntity(enemy);
-      // register enemy to the appropriate systems
-      this.game.registerEntity(
-          this.sceneId,
-          EnemySpawnSystem,
-          enemy.getId());
-      this.game.registerEntity(
-        this.sceneId,
-        EnemyMovementSystem,
-        enemy.getId());
-      this.game.registerEntity(
-          this.sceneId,
-          CanvasRenderSystem,
-          enemy.getId());
+      // spawn npc
+      this.spawn();
     }
   }
 
-  // despawns the enemy
-  private despawn(entityId: number): void
+  // spawns an npc in a random lane
+  private spawn(): void
   {
-    // deregister enemy from its systems
-    this.game.deregisterEntity(
-        this.sceneId,
-        EnemySpawnSystem,
-        entityId);
-    this.game.deregisterEntity(
-        this.sceneId,
-        EnemyMovementSystem,
-        entityId);
-    this.game.deregisterEntity(
-        this.sceneId,
-        CanvasRenderSystem,
-        entityId);
-    // remove enemy from the game
-    this.game.removeEntity(entityId);
+    // place holder
+  }
+}
+```
+The spawning logic is implemented to choose a random lane as well as to respect a certain "safety distance" implement with a cool-down timer.
+
+```typescript
+...
+// spawns an npc in a random lane
+private spawn(): void
+{
+  // lane selection
+  let laneNumber = Math.floor(Math.random() * this.lanes.length);
+  let lane = this.lanes[laneNumber];
+
+  // cooldown: max one spawn per lane per second
+  let now = new Date().getTime()
+  let delta = now - lane.lastItem;
+  if(delta > lane.cooldown)
+  {
+    // reset cooldwon counter
+    lane.lastItem = now;
+
+    // create npc using a dedicated factory
+    let id = Math.floor(Math.random() * 10**12);
+    let position = {x: lane.position, y: -100};
+    this.npcFactory.create(
+      id,
+      position,
+      lane.velocity,
+      this.systems);
   }
 }
 ```
 
 > It is considered best practice to implement one system per responsibility, each dedicated to their single and preferably simple task.
 
-Following this practice a system concerned with the enemies movement is needed.
+Following this practice a system concerned with the de-spawning is needed.
 ```typescript
-export class EnemyMovementSystem extends sczCore.SystemBase
+class NpcDespawnSystem extends sczCore.SystemBase
 {
-  constructor(eventBus: sczCore.EventBus)
+  private systems: sczCore.System[];
+
+  constructor(
+    eventbus: sczCore.EventBus,
+    systems: sczCore.System[])
   {
-      super(
-        [TranslateComponent],
-        eventBus,
-        sczCore.EngineEvent.Computation);
+    super(
+      // define what we expect NPCs to consist of
+      [EntityComponent, TranslateComponent],
+      eventbus,
+      // define when this system should be executed
+      sczCore.EngineEvent.PreComputation);
+
+    this.systems = systems;
   }
 
   protected processEntity(
-    deltaTime: number,
-    [translate]: [TranslateComponent]): void
+    _: number,
+    [entity, translate]: [EntityComponent, TranslateComponent]): void
   {
-    // move enemy by 100 pixel per second
-    translate.positionY += deltaTime * 0.1;
+    // check if out of view
+    if(translate.position.y > 900)
+    {
+      // despawn npc
+      this.despawn(entity.reference);
+    }
+  }
+
+  // despawns the npc
+  private despawn(entity: sczCore.Entity): void
+  {
+    for(let system of this.systems)
+    {
+      system.deregisterEntity(entity.getId());
+    }
+
+    // added to list
+    //this.deregisterEntity(entity.getId());
   }
 }
 ```
@@ -162,30 +152,25 @@ export class EnemyMovementSystem extends sczCore.SystemBase
 Finally the scene has to be updated to reflect these changes.
 ```typescript
 ...
-// add the render system to the scene
-this.addSystem(renderSystem);
+let npcSystems = Array<sczCore.System>(renderSystem, velocitySystem);
+let npcDespawnSystem = new NpcDespawnSystem(eventbus, npcSystems)
+this.addProp(npcDespawnSystem);
+npcSystems.push(npcDespawnSystem);
 
+// create the NPC factory
+let npcGraphic = "npcs/npc.svg";
+let npcGraphicSize = {x: 200, y:200};
+let npcFactory = new NpcFactory(npcGraphic, npcGraphicSize);
 
-// create the enemy movement system and add it to the scene
-let enemyMovementSystem = new EnemyMovementSystem(game.getEventBus());
-this.addSystem(enemyMovementSystem);
-
-
-// create the enemy factory
-let enemyFactory = new EnemyFactory(
-    "enemies/enemy.svg",
-    {x: 200, y:200});
-
-// create the enemy spawn system
-//  which is responsible for spawning enemies
-let enemySpawnSystem = new EnemySpawnSystem(
-    game,
-    this.getId(),
-     enemyFactory);
-this.addSystem(enemySpawnSystem);
-
-
-// create the player factory
-...
+// create the NPC spawn prop
+//  which is responsible for spawning NPCs
+let npcSpawnSystem = new NpcSpawnProp(
+  eventbus, npcSystems, npcFactory);
+this.addProp(npcSpawnSystem);
 ```
-With these few lines of code inserted into the `Battlefield` class we have successfully implemented everything we wanted in this step and are ready to test the progress.
+With these few lines of code inserted into the `Highway` class we have successfully implemented everything we wanted in this step and are ready to test the progress.
+
+
+## Result
+After saving and compiling:  
+![part three demo gif](part3.gif)

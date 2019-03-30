@@ -12,7 +12,7 @@ namespace sczBase.demo.helloWorld.partThree
       systems: sczCore.System[])
     {
       super(
-        // define what we expect enemies to consist of
+        // define what we expect NPCs to consist of
         [EntityComponent, TranslateComponent],
         eventbus,
         // define when this system should be executed
@@ -28,12 +28,12 @@ namespace sczBase.demo.helloWorld.partThree
       // check if out of view
       if(translate.position.y > 900)
       {
-        // despawn enemy
+        // despawn npc
         this.despawn(entity.reference);
       }
     }
 
-    // despawns the enemy
+    // despawns the npc
     private despawn(entity: sczCore.Entity): void
     {
       for(let system of this.systems)
