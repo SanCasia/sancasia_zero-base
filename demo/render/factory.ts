@@ -9,7 +9,7 @@ namespace sczBase.demo.render
       id: number,
       position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
       size: {x: number, y: number} = {x: 1, y: 1},
-      parentId: number = -1
+      parentEntity: sczCore.Entity = null
     ) : sczCore.Entity
     {
       // create a new empty entity
@@ -35,7 +35,7 @@ namespace sczBase.demo.render
       translate.sizeY = size.y;
 
       // parent
-      translate.parentId = parentId;
+      translate.parentEntity = parentEntity;
 
       // add component to entity
       part.addComponent(translate);

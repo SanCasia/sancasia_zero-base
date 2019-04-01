@@ -9,7 +9,6 @@ namespace sczBase.demo.render
     {
       let game = new sczCore.Game();
       let eventBus = game.getEventBus();
-      let translateService = new TranslateService(game);
 
       let scene = new sczCore.SceneBase(0, game.getEventBus());
       game.addScene(scene);
@@ -17,9 +16,7 @@ namespace sczBase.demo.render
       // add render system
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
-      let renderSystem = new CanvasRenderSystem(
-              context, translateService,
-              eventBus);
+      let renderSystem = new CanvasRenderSystem(context, eventBus);
       scene.addProp(renderSystem);
 
       // add parts system
@@ -37,20 +34,15 @@ namespace sczBase.demo.render
           {x: -0.5, y:  0.5},
           {x: -0.5, y: -0.5}];
 
-      // list of the original parts
-      let masters: number[] = [];
-
       // assemble the origial parts
       for(let i = 0; i < sizes.length; i++)
       {
         // create part via factory
+        let id = i * 100;
         let master = PartFactory.create(
-            i * 10,
+            id,
             center,
             sizes[i]);
-
-        // add part to game
-        game.addEntity(master);
 
         // register part in render system
         renderSystem.registerEntity(master);
@@ -58,16 +50,11 @@ namespace sczBase.demo.render
         // register part in part system
         partSystem.registerEntity(master);
 
-        masters.push(master.getId());
-      }
-
-      // assemble part chains for each master
-      for(let masterId of masters)
-      {
-        for(let i = 1; i <= 5; i++)
+        // append followers
+        for(let y = 1; y <= 5; y++)
         {
-          let id = i + masterId;
-          let position = {x: 250, y: 0, z: i};
+          let id = i * 100 + y;
+          let position = {x: 250, y: 0, z: y};
           let factor = {x: 0.75, y: 0.75};
 
           // create part via part factory
@@ -76,17 +63,16 @@ namespace sczBase.demo.render
                   id,
                   position,
                   factor,
-                  id-1);
-
-          // add part to game
-          game.addEntity(part);
+                  master);
 
           // register part to render system
-          // register part in render system
           renderSystem.registerEntity(part);
 
           // register part in part system
           partSystem.registerEntity(part);
+
+          // set master for next part
+          master = part;
         }
       }
 
