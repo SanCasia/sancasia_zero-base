@@ -7,12 +7,13 @@ namespace sczBase.demo.helloWorld.partOne
   {
     public static main()
     {
-      // create the new game object
-      // this is initializing a new event bus as well as a new engine
+      // create the game object
+      // this is initializing an event bus as well as an engine
       let game = new sczCore.Game();
 
-      // create our scene where we create and draw the player
-      let highway = new Highway(0, game);
+      // create our scene
+      // the scene is responsible for drawing the player
+      let highway = new Highway(0, game.getEventBus());
 
       // lets start the engine!
       game.start();

@@ -12,10 +12,10 @@ namespace sczBase.demo.helloWorld.partOne
 
       // define the translate addComponent
       let translate = new sczBase.TranslateComponent();
-      translate.positionX = 100;  // on position position, x coordinate
-      translate.positionY = 550;  // on position position, y coordinate
-      translate.sizeX = 1;        // relateive size in x dimension
-      translate.sizeY = 1;        // relateive size in y dimension
+      translate.positionX = 100;  // position, x coordinate
+      translate.positionY = 550;  // position, y coordinate
+      translate.sizeX = 1;        // relative size in x dimension
+      translate.sizeY = 1;        // relative size in y dimension
       translate.rotation = 0;     // rotation of the entity
       translate.centerX = 0;      // center of rotation, x value
       translate.centerY = 0;      // center of rotation, y value

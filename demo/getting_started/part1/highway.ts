@@ -3,11 +3,12 @@
 
 namespace sczBase.demo.helloWorld.partOne
 {
+  // we extend SceneBase which will handel some things for us.
   export class Highway extends sczCore.SceneBase
   {
-    public constructor(id: number, game: sczCore.Game)
+    public constructor(id: number, eventbus: sczCore.EventBus)
     {
-      let eventbus = game.getEventBus();
+      // calling the super constructor.
       super(id, eventbus);
 
       // constructing canvas render system ...
@@ -16,10 +17,7 @@ namespace sczBase.demo.helloWorld.partOne
       // extracting context from tag
       let context = canvas.getContext('2d');
       // putting it all together:
-      let renderSystem =
-        new CanvasRenderSystem(
-          context,
-          eventbus);
+      let renderSystem = new sczBase.CanvasRenderSystem(context, eventbus);
       // adding new system to scene
       this.addProp(renderSystem);
 
