@@ -13,12 +13,7 @@ namespace sczBase.demo.helloWorld.partTwo
       // same old canvas rendering system
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
-      let translateService = new TranslateService(game);
-      let renderSystem =
-          new CanvasRenderSystem(
-              context,
-              translateService,
-              eventbus);
+      let renderSystem = new CanvasRenderSystem(context, eventbus);
       this.addProp(renderSystem);
 
       // velocity system: handles movement based on velocity component

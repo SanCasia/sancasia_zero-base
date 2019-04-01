@@ -12,12 +12,7 @@ namespace sczBase.demo.helloWorld.partThree
 
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       let context = canvas.getContext('2d');
-      let translateService = new TranslateService(game);
-      let renderSystem =
-          new CanvasRenderSystem(
-              context,
-              translateService,
-              eventbus);
+      let renderSystem = new CanvasRenderSystem(context, eventbus);
       this.addProp(renderSystem);
 
       let velocitySystem = new sczBase.VelocitySystem(eventbus);

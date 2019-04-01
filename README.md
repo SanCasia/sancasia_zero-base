@@ -22,4 +22,4 @@ The source code of this series is located under `demo/getting_started/`.
 
 [Part One: Hello World](https://github.com/SanCasia/sancasia_zero-base/wiki/Part-One:-Hello-World)  
 [Part Two: User Input Required](https://github.com/SanCasia/sancasia_zero-base/wiki/Part-Two:-User-Input-Required)  
-[Part Three: What About Enemies](https://github.com/SanCasia/sancasia_zero-base/wiki/Part-Three:-What-About-Enemies)
+[Part Three: What About NPCs](https://github.com/SanCasia/sancasia_zero-base/wiki/Part-Three:-What-About-NPCs)
