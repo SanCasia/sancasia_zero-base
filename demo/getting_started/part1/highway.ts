@@ -15,13 +15,10 @@ namespace sczBase.demo.helloWorld.partOne
       let canvas = <HTMLCanvasElement> document.getElementById("canvas");
       // extracting context from tag
       let context = canvas.getContext('2d');
-      // initialising dependency on translate service
-      let translateService = new TranslateService(game);
       // putting it all together:
       let renderSystem =
         new CanvasRenderSystem(
           context,
-          translateService,
           eventbus);
       // adding new system to scene
       this.addProp(renderSystem);

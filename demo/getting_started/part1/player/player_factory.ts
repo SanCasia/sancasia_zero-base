@@ -19,7 +19,6 @@ namespace sczBase.demo.helloWorld.partOne
       translate.rotation = 0;     // rotation of the entity
       translate.centerX = 0;      // center of rotation, x value
       translate.centerY = 0;      // center of rotation, y value
-      translate.parentId = -1;    // id of parent (no parent)
       player.addComponent(translate);
 
       // define sprite
