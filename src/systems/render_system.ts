@@ -1,15 +1,13 @@
 /// <reference path="../../node_modules/sancasia_zero-core/obj/sancasia_zero.core.d.ts" />
 
 namespace sczBase
-{  
+{
   export class CanvasRenderSystem extends sczCore.SystemBase
   {
-    private translateService: TranslateService;
     private context: CanvasRenderingContext2D;
 
     constructor(
       context: CanvasRenderingContext2D,
-      translateService: TranslateService,
       eventBus: sczCore.EventBus)
     {
         super(
@@ -18,7 +16,6 @@ namespace sczBase
           sczCore.EngineEvent.Render);
 
         this.context = context;
-        this.translateService = translateService;
     }
 
     public process = (deltaTime: number): void =>
@@ -49,9 +46,9 @@ namespace sczBase
       _: number,
       [translate, sprite]: [TranslateComponent, SpriteComponent]): void
     {
-      let position = this.translateService.getAbsolutePosition(translate);
-      let size = this.translateService.getAbsoluteSize(translate);
-      let rotation = this.translateService.getAbsoluteRotation(translate);
+      let position = TranslateService.getAbsolutePosition(translate);
+      let size = TranslateService.getAbsoluteSize(translate);
+      let rotation = TranslateService.getAbsoluteRotation(translate);
       let center = translate.center;
 
       this.context.save();

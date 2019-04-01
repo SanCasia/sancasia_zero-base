@@ -4,28 +4,16 @@ namespace sczBase
 {
   export class TranslateService
   {
-    private game: sczCore.Game;
-    public constructor(game: sczCore.Game)
-    {
-      this.game = game;
-    }
-
-    public getAbsolutePosition(translate: TranslateComponent)
+    public static getAbsolutePosition(translate: TranslateComponent)
       : { x: number, y: number, z: number}
     {
-      if(!this.game.hasEntity(translate.parentId))
+      let parentTranslate = translate.parent;
+
+      if(parentTranslate == null)
       {
         return translate.position;
       }
 
-      let parent = this.game.getEntity(translate.parentId)
-      if(!parent.hasComponent(TranslateComponent))
-      {
-        return translate.position;
-      }
-
-      let parentTranslate =
-        <TranslateComponent>parent.getComponent(TranslateComponent);
       let parentPosition = this.getAbsolutePosition(parentTranslate);
       let parentSize = this.getAbsoluteSize(parentTranslate);
       let parentRotation = this.getAbsoluteRotation(parentTranslate);
@@ -53,21 +41,15 @@ namespace sczBase
       return TranslateService.addPositon(parentPosition, vector);
     }
 
-    public getAbsoluteRotation(translate: TranslateComponent): number
+    public static getAbsoluteRotation(translate: TranslateComponent): number
     {
-      if(!this.game.hasEntity(translate.parentId))
+      let parentTranslate = translate.parent;
+
+      if(parentTranslate == null)
       {
         return TranslateService.trimRotation(translate.rotation);
       }
 
-      let parent = this.game.getEntity(translate.parentId)
-      if(!parent.hasComponent(TranslateComponent))
-      {
-        return TranslateService.trimRotation(translate.rotation);
-      }
-
-      let parentTranslate =
-        <TranslateComponent> parent.getComponent(TranslateComponent);
       let parentRotation = this.getAbsoluteRotation(parentTranslate);
 
       return TranslateService.addRotation(
@@ -75,22 +57,16 @@ namespace sczBase
         translate.size, translate.rotation);
     }
 
-    public getAbsoluteSize(translate: TranslateComponent)
+    public static getAbsoluteSize(translate: TranslateComponent)
       : {x: number, y: number}
     {
-      if(!this.game.hasEntity(translate.parentId))
+      let parentTranslate = translate.parent;
+
+      if(parentTranslate == null)
       {
         return translate.size;
       }
 
-      let parent = this.game.getEntity(translate.parentId)
-      if(!parent.hasComponent(TranslateComponent))
-      {
-        return translate.size;
-      }
-
-      let parentTranslate =
-        <TranslateComponent> parent.getComponent(TranslateComponent);
       let parentSize = this.getAbsoluteSize(parentTranslate);
 
       return TranslateService.addSize(parentSize, translate.size);
@@ -107,7 +83,7 @@ namespace sczBase
       }
     }
 
-    static trimRotation(rotation: number): number {
+    public static trimRotation(rotation: number): number {
       return rotation > 0 ? rotation % 360 : 360 + rotation % 360;
     }
 
@@ -125,12 +101,10 @@ namespace sczBase
       size: {x: number, y: number},
       rotation: number): number
     {
-      // todo: sin/cos magic
-      if (size.y < 0)
-        rotation = 360 - rotation;
-      if (size.x < 0)
-        rotation = 180 - rotation;
-        return this.trimRotation(rotation);
+      let vector = TranslateService.toVector(rotation, 1);
+      vector = TranslateService.scalePosition(size, vector);
+      rotation = TranslateService.getAngle(vector);
+      return TranslateService.trimRotation(rotation);
     }
 
     public static scalePosition(
@@ -145,7 +119,7 @@ namespace sczBase
       };
     }
 
-    static addPositon(
+    public static addPositon(
       position: {x: number, y: number, z: number},
       vector: {x: number, y: number, z: number})
         :any
@@ -157,7 +131,7 @@ namespace sczBase
       };
     }
 
-    static toVector(angle: number, distance: number): any
+    public static toVector(angle: number, distance: number): any
     {
       angle = angle / 180 * Math.PI;
       return {
@@ -167,13 +141,13 @@ namespace sczBase
       };
     }
 
-    static getMagnitude(vector: {x: number, y: number, z: number}): any
+    public static getMagnitude(vector: {x: number, y: number, z: number}): any
     {
       return Math.sqrt(
         Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
     }
 
-    static getAngle(vector: {x: number, y: number, z: number}): any
+    public static getAngle(vector: {x: number, y: number, z: number}): any
     {
       let angle = Math.atan(vector.y/vector.x)
       angle = isNaN(angle) ? angle = 0 : angle * 180 / Math.PI;

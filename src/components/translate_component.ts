@@ -4,8 +4,24 @@ namespace sczBase
 {
   export class TranslateComponent extends sczCore.Component
   {
-    public parentId: number;
+    // parent
+    private _parentEntity: sczCore.Entity;
+    public set parentEntity(entity: sczCore.Entity)
+    {
+      this._parentEntity = entity;
+    }
+    public get parent(): TranslateComponent
+    {
+      if(this._parentEntity == null)
+        return null;
+      if(!this._parentEntity.hasComponent(TranslateComponent))
+        return null;
+        
+      return <TranslateComponent>this._parentEntity
+        .getComponent(TranslateComponent);
+    }
 
+    // position
     public positionX: number;
     public positionY: number;
     public positionZ: number;
@@ -18,8 +34,10 @@ namespace sczBase
       }
     }
 
+    // rotation
     public rotation: number;
 
+    // center
     public centerX: number;
     public centerY: number;
     public get center(): { x: number, y: number}
@@ -30,6 +48,7 @@ namespace sczBase
       }
     }
 
+    // relative size
     public sizeX: number;
     public sizeY: number;
     public get size(): { x: number, y: number}
