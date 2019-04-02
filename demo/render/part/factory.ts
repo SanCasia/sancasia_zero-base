@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/sancasia_zero-core/obj/sancasia_zero.core.d.ts" />
-/// <reference path="../../obj/sancasia_zero.base.d.ts" />
+/// <reference path="../../../node_modules/sancasia_zero-core/obj/sancasia_zero.core.d.ts" />
+/// <reference path="../../../obj/sancasia_zero.base.d.ts" />
 
 namespace sczBase.demo.render
 {
@@ -24,15 +24,15 @@ namespace sczBase.demo.render
       translate.positionZ = position.z;
 
       // center
-      translate.centerX = 50;
-      translate.centerY = 50;
+      translate.centerFactorX = 1/6;
+      translate.centerFactorY = 1/2;
 
       // rotation
       translate.rotation = 0;
 
       // size
-      translate.sizeX = size.x;
-      translate.sizeY = size.y;
+      translate.sizeFactorX = size.x;
+      translate.sizeFactorY = size.y;
 
       // parent
       translate.parentEntity = parentEntity;
@@ -45,7 +45,7 @@ namespace sczBase.demo.render
 
       // image
       sprite.sprite = new Image();
-      sprite.sprite.src = "part.svg";
+      sprite.sprite.src = "part/part.svg";
 
       // dimensions
       sprite.sizeX = 300;

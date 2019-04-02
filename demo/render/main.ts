@@ -24,25 +24,39 @@ namespace sczBase.demo.render
               game.getEventBus());
       scene.addProp(partSystem);
 
+      // add parts
+      this.addParts(renderSystem, partSystem);
+
+      // start the game engine
+      game.start();
+
+      // activate the scene
+      game.activateScene(scene.getId());
+    }
+
+    static addParts(
+      renderSystem: CanvasRenderSystem,
+      partSystem: PartSystem)
+    {
       // define common values
       let centerX = document.body.clientWidth / 2;
       let centerY = document.body.clientHeight / 2;
       let center = {x: centerX, y: centerY, z: 0};
-      let sizes = [
+      let sizeFactors = [
           {x:  0.5, y:  0.5},
           {x:  0.5, y: -0.5},
           {x: -0.5, y:  0.5},
           {x: -0.5, y: -0.5}];
 
       // assemble the origial parts
-      for(let i = 0; i < sizes.length; i++)
+      for(let i = 0; i < sizeFactors.length; i++)
       {
         // create part via factory
         let id = i * 100;
         let master = PartFactory.create(
             id,
             center,
-            sizes[i]);
+            sizeFactors[i]);
 
         // register part in render system
         renderSystem.registerEntity(master);
@@ -75,12 +89,6 @@ namespace sczBase.demo.render
           master = part;
         }
       }
-
-      // start the game engine
-      game.start();
-
-      // activate the scene
-      game.activateScene(scene.getId());
     }
   }
 }
