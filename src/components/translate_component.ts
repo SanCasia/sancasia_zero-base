@@ -16,7 +16,7 @@ namespace sczBase
         return null;
       if(!this._parentEntity.hasComponent(TranslateComponent))
         return null;
-        
+
       return <TranslateComponent>this._parentEntity
         .getComponent(TranslateComponent);
     }
@@ -38,24 +38,24 @@ namespace sczBase
     public rotation: number;
 
     // center
-    public centerX: number;
-    public centerY: number;
-    public get center(): { x: number, y: number}
+    public centerFactorX: number;
+    public centerFactorY: number;
+    public get centerFactor(): { x: number, y: number}
     {
       return {
-        x: this.centerX,
-        y: this.centerY
+        x: this.centerFactorX,
+        y: this.centerFactorY
       }
     }
 
     // relative size
-    public sizeX: number;
-    public sizeY: number;
-    public get size(): { x: number, y: number}
+    public sizeFactorX: number;
+    public sizeFactorY: number;
+    public get sizeFactor(): { x: number, y: number}
     {
       return {
-        x: this.sizeX,
-        y: this.sizeY
+        x: this.sizeFactorX,
+        y: this.sizeFactorY
       }
     }
   }

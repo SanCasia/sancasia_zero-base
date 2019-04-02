@@ -54,7 +54,7 @@ namespace sczBase
 
       return TranslateService.addRotation(
         parentRotation,
-        translate.size, translate.rotation);
+        translate.sizeFactor, translate.rotation);
     }
 
     public static getAbsoluteSize(translate: TranslateComponent)
@@ -64,12 +64,12 @@ namespace sczBase
 
       if(parentTranslate == null)
       {
-        return translate.size;
+        return translate.sizeFactor;
       }
 
       let parentSize = this.getAbsoluteSize(parentTranslate);
 
-      return TranslateService.addSize(parentSize, translate.size);
+      return TranslateService.addSize(parentSize, translate.sizeFactor);
     }
 
     public static addSize(

@@ -45,14 +45,16 @@ namespace sczBase
       let position = TranslateService.getAbsolutePosition(translate);
       let size = TranslateService.getAbsoluteSize(translate);
       let rotation = TranslateService.getAbsoluteRotation(translate);
-      let center = translate.center;
+      let center = {
+        x: translate.centerFactor.x * sprite.size.x,
+        y: translate.centerFactor.y * sprite.size.y
+      }
 
       this.context.save();
 
       this.context.translate(position.x, position.y);
       this.context.scale(size.x, size.y);
       this.context.rotate(rotation*Math.PI/180);
-
 
       this.context.drawImage(
         sprite.sprite,
