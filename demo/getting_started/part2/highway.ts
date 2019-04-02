@@ -29,16 +29,17 @@ namespace sczBase.demo.helloWorld.partTwo
       let actionSystem = new PlayerActionSystem(eventbus);
       this.addProp(actionSystem);
 
-      // create the player factory
-      let playerGraphic = "players/player.svg";
-      let playerGraphicSize = {x: 200, y:200};
-      let playerFactory = new PlayerFactory(playerGraphic, playerGraphicSize);
-
       // spawn the player
       let playerId = 0;
       let playerPosition = {x: 200, y: 700}
       let systems = [renderSystem, actionSystem, velocitySystem];
-      let player = playerFactory.create(playerId, playerPosition, systems);
+      let player = PlayerFactory.create(playerId, playerPosition);
+
+      for(let system of systems)
+      {
+        system.registerEntity(player);
+      }
+
       game.addEntity(player);
     }
   }
