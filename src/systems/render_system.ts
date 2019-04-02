@@ -18,28 +18,24 @@ namespace sczBase
         this.context = context;
     }
 
-    public process = (deltaTime: number): void =>
+    public process(deltaTime: number): void
     {
       this.context.clearRect(
         0, 0,
         this.context.canvas.width,
         this.context.canvas.height);
 
-      let entities = [...this.entities.values()];
-      entities.sort((a: sczCore.Entity, b: sczCore.Entity) =>
+      let entities = [...this.entities];
+      entities.sort(([_i, a]: [number, sczCore.Entity], [_j, b]: [number, sczCore.Entity]) =>
       {
         let compA = <TranslateComponent> a.getComponent(TranslateComponent);
         let compB = <TranslateComponent> b.getComponent(TranslateComponent);
         return compA.position.z - compB.position.z;
       });
 
-      for(let entity of entities)
-      {
-        let cache =
-          <[TranslateComponent, SpriteComponent]> entity.getCache(this);
-        this.processEntity(deltaTime, cache);
-        entity.updateCache(this, cache);
-      };
+      this.entities = new Map(entities);
+
+      super.process(deltaTime);
     }
 
     protected processEntity(
