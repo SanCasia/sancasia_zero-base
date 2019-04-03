@@ -16,9 +16,9 @@ namespace sczBase.demo.helloWorld.partOne
       translate.positionY = 550;    // position, y coordinate
       translate.sizeFactorX = 1;    // relative size in x dimension
       translate.sizeFactorY = 1;    // relative size in y dimension
-      translate.rotation = 0;       // rotation of the entity
       translate.centerFactorX = 0;  // center of rotation, x value
       translate.centerFactorY = 0;  // center of rotation, y value
+      translate.rotation = 0;       // rotation of the entity
       player.addComponent(translate);
 
       // define sprite
