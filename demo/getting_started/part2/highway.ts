@@ -32,9 +32,9 @@ namespace sczBase.demo.helloWorld.partTwo
       // spawn the player
       let playerId = 0;
       let playerPosition = {x: 200, y: 700}
-      let systems = [renderSystem, actionSystem, velocitySystem];
       let player = PlayerFactory.create(playerId, playerPosition);
 
+      let systems = [renderSystem, actionSystem, velocitySystem];
       for(let system of systems)
       {
         system.registerEntity(player);
