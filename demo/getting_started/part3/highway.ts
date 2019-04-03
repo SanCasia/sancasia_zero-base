@@ -24,34 +24,23 @@ namespace sczBase.demo.helloWorld.partThree
       let actionSystem = new PlayerActionSystem(eventbus);
       this.addProp(actionSystem);
 
-      // create the player factory
-      let playerGraphic = "players/player.svg";
-      let playerGraphicSize = {x: 200, y:200};
-      let playerFactory = new PlayerFactory(playerGraphic, playerGraphicSize);
-
-      // spawn the player
       let playerId = 0;
       let playerPosition = {x: 200, y: 700}
+      let player = PlayerFactory.create(playerId, playerPosition);
       let playerSystems = [actionSystem, velocitySystem, renderSystem];
-      let player = playerFactory.create(
-        playerId, playerPosition, playerSystems);
-      game.addEntity(player);
-
+      for(let playerSystem of playerSystems)
+      {
+        playerSystem.registerEntity(player);
+      }
 
       let npcSystems = Array<sczCore.System>(renderSystem, velocitySystem);
       let npcDespawnSystem = new NpcDespawnSystem(eventbus, npcSystems)
       this.addProp(npcDespawnSystem);
       npcSystems.push(npcDespawnSystem);
 
-      // create the npc factory
-      let npcGraphic = "npcs/npc.svg";
-      let npcGraphicSize = {x: 200, y:200};
-      let npcFactory = new NpcFactory(npcGraphic, npcGraphicSize);
-
       // create the npc spawn prop
       //  which is responsible for spawning NPCs
-      let npcSpawnSystem = new NpcSpawnProp(
-        eventbus, npcSystems, npcFactory);
+      let npcSpawnSystem = new NpcSpawnProp(eventbus, npcSystems);
       this.addProp(npcSpawnSystem);
     }
   }

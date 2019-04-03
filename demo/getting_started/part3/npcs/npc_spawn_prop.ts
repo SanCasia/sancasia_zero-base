@@ -22,18 +22,15 @@ namespace sczBase.demo.helloWorld.partThree
   export class NpcSpawnProp extends sczCore.PropBase
   {
     private systems: sczCore.System[];
-    private npcFactory: NpcFactory;
     private lanes: Array<Lane>;
 
 
     constructor(
       eventbus: sczCore.EventBus,
-      systems: sczCore.System[],
-      npcFactory: NpcFactory)
+      systems: sczCore.System[])
     {
       super(eventbus, sczCore.EngineEvent.PostComputation)
       this.systems = systems;
-      this.npcFactory = npcFactory;
 
       // define possible lanes
       this.lanes = [
@@ -71,11 +68,11 @@ namespace sczBase.demo.helloWorld.partThree
         // create npc using a dedicated factory
         let id = Math.floor(Math.random() * 10**12);
         let position = {x: lane.position, y: -100};
-        this.npcFactory.create(
-          id,
-          position,
-          lane.velocity,
-          this.systems);
+        let npc = NpcFactory.create(id, position, lane.velocity);
+        for(let system of this.systems)
+        {
+          system.registerEntity(npc);
+        }
       }
     }
   }
