@@ -92,11 +92,11 @@ private spawn(): void
     // create npc using a dedicated factory
     let id = Math.floor(Math.random() * 10**12);
     let position = {x: lane.position, y: -100};
-    this.npcFactory.create(
-      id,
-      position,
-      lane.velocity,
-      this.systems);
+    let npc = NpcFactory.create(id, position, lane.velocity);
+    for(let system of this.systems)
+    {
+      system.registerEntity(npc);
+    }
   }
 }
 ```
@@ -157,15 +157,9 @@ let npcDespawnSystem = new NpcDespawnSystem(eventbus, npcSystems)
 this.addProp(npcDespawnSystem);
 npcSystems.push(npcDespawnSystem);
 
-// create the NPC factory
-let npcGraphic = "npcs/npc.svg";
-let npcGraphicSize = {x: 200, y:200};
-let npcFactory = new NpcFactory(npcGraphic, npcGraphicSize);
-
-// create the NPC spawn prop
+// create the npc spawn prop
 //  which is responsible for spawning NPCs
-let npcSpawnSystem = new NpcSpawnProp(
-  eventbus, npcSystems, npcFactory);
+let npcSpawnSystem = new NpcSpawnProp(eventbus, npcSystems);
 this.addProp(npcSpawnSystem);
 ```
 With these few lines of code inserted into the `Highway` class we have successfully implemented everything we wanted in this step and are ready to test the progress.

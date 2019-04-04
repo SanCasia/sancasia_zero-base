@@ -39,7 +39,7 @@ class PlayerActionSystem
   public startMoveUp(_: number, [velocity]: [sczBase.VelocityComponent])
   {
     // set velocity in the Y direction to ...
-    velocity.velocityY = -100;
+    velocity.velocityY = -200;
   }
 
   // when "stopMoveUp"
@@ -48,6 +48,7 @@ class PlayerActionSystem
     // set velocity in the Y direction to ...
     velocity.velocityY = 0;
   }
+
   // etc.
 }
 ```
@@ -58,9 +59,13 @@ The only thing left to do is to make sure our player is registered with all the 
 // spawn the player
 let playerId = 0;
 let playerPosition = {x: 200, y: 700}
+let player = PlayerFactory.create(playerId, playerPosition);
+
 let systems = [renderSystem, actionSystem, velocitySystem];
-let player = playerFactory.create(playerId, playerPosition, systems);
-game.addEntity(player);
+for(let system of systems)
+{
+  system.registerEntity(player);
+}
 ```
 
 ## Result
