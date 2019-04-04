@@ -25,10 +25,9 @@ namespace sczBase
 
       // rotation += absolute angle
       let angle = TranslateService.getAngle(translate.position);
-      let rotation =
-          TranslateService.scaleRotation(
-              parentSize,
-              parentRotation + angle);
+      let rotation = TranslateService.scaleRotation(
+        parentSize,
+        parentRotation + angle);
 
       // distance from absolute
       let distance = TranslateService.getMagnitude(absolute);
