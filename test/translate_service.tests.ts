@@ -8,28 +8,28 @@ namespace sczBase.tests
     public static canScaleRotation(): void
     {
       var rotation = TranslateService.scaleRotation({x:1,y:1}, 10);
-      if(rotation != 10)
+      if(Math.round(rotation * 10**2)/10**2 != 10)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 10]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:1,y:1}, 120);
-      if(rotation != 120)
+      if(Math.round(rotation * 10**2)/10**2 != 120)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 120]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:1,y:1}, 200);
-      if(rotation != 200)
+      if(Math.round(rotation * 10**2)/10**2 != 200)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 200]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:1,y:1}, -30);
-      if(rotation != 330)
+      if(Math.round(rotation * 10**2)/10**2 != 330)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 330]`);
@@ -39,28 +39,28 @@ namespace sczBase.tests
     public static canScaleRotationX(): void
     {
       var rotation = TranslateService.scaleRotation({x:1,y:-1}, 10);
-      if(rotation != 350)
+      if(Math.round(rotation * 10**2)/10**2 != 350)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 350]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:1,y:-1}, 120);
-      if(rotation != 240)
+      if(Math.round(rotation * 10**2)/10**2 != 240)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 240]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:1,y:-1}, 200);
-      if(rotation != 160)
+      if(Math.round(rotation * 10**2)/10**2 != 160)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 160]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:1,y:-1}, -30);
-      if(rotation != 30)
+      if(Math.round(rotation * 10**2)/10**2 != 30)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 30]`);
@@ -70,28 +70,28 @@ namespace sczBase.tests
     public static canScaleRotationY(): void
     {
       var rotation = TranslateService.scaleRotation({x:-1,y:1}, 10);
-      if(rotation != 170)
+      if(Math.round(rotation * 10**2)/10**2 != 170)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 170]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:-1,y:1}, 120);
-      if(rotation != 60)
+      if(Math.round(rotation * 10**2)/10**2 != 60)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 60]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:-1,y:1}, 200);
-      if(rotation != 340)
+      if(Math.round(rotation * 10**2)/10**2 != 340)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 340]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:-1,y:1}, -30);
-      if(rotation != 210)
+      if(Math.round(rotation * 10**2)/10**2 != 210)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 210]`);
@@ -101,28 +101,28 @@ namespace sczBase.tests
     public static canScaleRotationXY(): void
     {
       var rotation = TranslateService.scaleRotation({x:-1,y:-1}, 10);
-      if(rotation != 190)
+      if(Math.round(rotation * 10**2)/10**2 != 190)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 190]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:-1,y:-1}, 120);
-      if(rotation != 300)
+      if(Math.round(rotation * 10**2)/10**2 != 300)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 300]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:-1,y:-1}, 200);
-      if(rotation != 20)
+      if(Math.round(rotation * 10**2)/10**2 != 20)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 20]`);
       }
 
       var rotation = TranslateService.scaleRotation({x:-1,y:-1}, -30);
-      if(rotation != 150)
+      if(Math.round(rotation * 10**2)/10**2 != 150)
       {
         throw new Error(`size rotation: rotation not equal`+
           `[${rotation} != 150]`);
@@ -135,7 +135,7 @@ namespace sczBase.tests
         30,
         {x:1, y:1},
         240);
-      if(rotation != 270)
+      if(Math.round(rotation * 10**2)/10**2 != 270)
       {
         throw new Error(`add rotation: rotation not equal`+
           `[${rotation} != 270]`);
@@ -148,7 +148,7 @@ namespace sczBase.tests
         30,
         {x:1, y:-1},
         190);
-      if(rotation != 200)
+      if(Math.round(rotation * 10**2)/10**2 != 200)
       {
         throw new Error(`add rotation: rotation not equal`+
           `[${rotation} != 200]`);
@@ -158,7 +158,7 @@ namespace sczBase.tests
         30,
         {x:-1, y:1},
         190);
-      if(rotation != 20)
+      if(Math.round(rotation * 10**2)/10**2 != 20)
       {
         throw new Error(`add rotation: rotation not equal`+
           `[${rotation} != 20]`);
@@ -168,7 +168,7 @@ namespace sczBase.tests
         30,
         {x:-1, y:-1},
         190);
-      if(rotation != 40)
+      if(Math.round(rotation * 10**2)/10**2 != 40)
       {
         throw new Error(`add rotation: rotation not equal`+
           `[${rotation} != 40]`);

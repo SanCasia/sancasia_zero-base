@@ -7,52 +7,41 @@ namespace sczBase.tests
   {
     public static canGetSize(): void
     {
-      let game = new sczCore.Game();
-      let translateService = new TranslateService(game);
-
       let translate = TranslateFactory.createS({x:1, y:1});
-      let size = translateService.getAbsoluteSize(translate);
-      if(size.x != 1 || size.y != 1)
+      let sizeFactor = TranslateService.getAbsoluteSize(translate);
+      if(sizeFactor.x != 1 || sizeFactor.y != 1)
       {
-        throw new Error("parentless translate: size not equal");
+        throw new Error("parentless translate: sizeFactor not equal");
       }
 
       translate = TranslateFactory.createS({x:0.5, y:-0.5});
-      size = translateService.getAbsoluteSize(translate);
-      if(size.x != 0.5 || size.y != -0.5)
+      sizeFactor = TranslateService.getAbsoluteSize(translate);
+      if(sizeFactor.x != 0.5 || sizeFactor.y != -0.5)
       {
-        throw new Error("parentless translate: size not equal");
+        throw new Error("parentless translate: sizeFactor not equal");
       }
     }
 
     public static canGetCascadedSize(): void
     {
-      let game = new sczCore.Game();
-      let translateService = new TranslateService(game);
-
       let parent = EntityFactory.create();
-      game.addEntity(parent);
       let translate = TranslateFactory.createS(
-          {x:0.5,y:0.5}, parent.getId());
-      let size = translateService.getAbsoluteSize(translate);
-      if(size.x != 0.5 || size.y != 0.5)
+          {x:0.5,y:0.5}, parent);
+      let sizeFactor = TranslateService.getAbsoluteSize(translate);
+      if(sizeFactor.x != 0.5 || sizeFactor.y != 0.5)
       {
-        throw new Error("cascaded translate: size not equal");
+        throw new Error("cascaded translate: sizeFactor not equal");
       }
     }
 
     public static canGetInvertedSize(): void
     {
-      let game = new sczCore.Game();
-      let translateService = new TranslateService(game);
-
       let parent = EntityFactory.createS({x:-1.0, y:-1.0});
-      game.addEntity(parent);
-      let translate = TranslateFactory.createS({x:0.5,y:-0.5}, parent.getId());
-      let size = translateService.getAbsoluteSize(translate);
-      if(size.x != -0.5 || size.y != 0.5)
+      let translate = TranslateFactory.createS({x:0.5,y:-0.5}, parent);
+      let sizeFactor = TranslateService.getAbsoluteSize(translate);
+      if(sizeFactor.x != -0.5 || sizeFactor.y != 0.5)
       {
-        throw new Error("inverted translate: size not equal");
+        throw new Error("inverted translate: sizeFactor not equal");
       }
     }
   }
@@ -60,19 +49,20 @@ namespace sczBase.tests
   class TranslateFactory
   {
     public static createS(
-        size: {x: number, y: number} = {x: 1, y: 1},
-        parentId: number = -1): TranslateComponent
+      sizeFactor: {x: number, y: number} = {x: 1, y: 1},
+      parent: sczCore.Entity = null
+    ): TranslateComponent
     {
       let translate = new TranslateComponent();
-      translate.sizeX = size.x;
-      translate.sizeY = size.y;
-      translate.parentId = parentId;
+      translate.sizeFactorX = sizeFactor.x;
+      translate.sizeFactorY = sizeFactor.y;
+      translate.parentEntity = parent;
       return translate;
     }
 
     public static createR(
-        position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
-        rotation: number = 0): TranslateComponent
+      position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
+      rotation: number = 0): TranslateComponent
     {
       let translate = new TranslateComponent();
       translate.positionX = position.x;
@@ -83,14 +73,15 @@ namespace sczBase.tests
     }
 
     public static createP(
-        position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
-        parentId: number = -1): TranslateComponent
+      position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
+      parent: sczCore.Entity = null
+    ): TranslateComponent
     {
       let translate = new TranslateComponent();
       translate.positionX = position.x;
       translate.positionY = position.y;
       translate.positionZ = position.z;
-      translate.parentId = parentId;
+      translate.parentEntity = parent;
       return translate;
     }
   }
@@ -102,7 +93,7 @@ namespace sczBase.tests
       position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
       factor: {x: number, y: number} = {x: 1, y: 1},
       rotation: number = 0,
-      parentId: number = -1
+      parent: sczCore.Entity = null
     ) : sczCore.Entity
     {
       let entity = new sczCore.Entity(this.id++);
@@ -113,10 +104,10 @@ namespace sczBase.tests
 
       translate.rotation = rotation;
 
-      translate.sizeX = factor.x;
-      translate.sizeY = factor.y;
+      translate.sizeFactorX = factor.x;
+      translate.sizeFactorY = factor.y;
 
-      translate.parentId = parentId;
+      translate.parentEntity = parent;
 
       entity.addComponent(translate);
 
@@ -125,7 +116,7 @@ namespace sczBase.tests
 
     public static createS(
       factor: {x: number, y: number},
-      parent: number = -1
+      parent: sczCore.Entity = null
     ) : sczCore.Entity
     {
       return this.create(
@@ -137,7 +128,7 @@ namespace sczBase.tests
 
     public static createR(
       rotation: number,
-      parent: number = -1,
+      parent: sczCore.Entity = null,
       factor: {x: number, y: number} = {x: 1, y: 1}
     ) : sczCore.Entity
     {

@@ -7,12 +7,8 @@ namespace sczBase.tests
   {
     public static canGetRotation(): void
     {
-      let game = new sczCore.Game();
-      let translateService = new TranslateService(game);
-
       let grandparent = TEFactory.createR(109);
-      game.addEntity(grandparent);
-      let grandparentRotation = translateService.getAbsoluteRotation(
+      let grandparentRotation = TranslateService.getAbsoluteRotation(
         <TranslateComponent>grandparent.getComponent(TranslateComponent));
       if(grandparentRotation != 109)
       {
@@ -22,8 +18,7 @@ namespace sczBase.tests
       }
 
       let parent = TEFactory.createR(-90);
-      game.addEntity(parent);
-      let parentRotation = translateService.getAbsoluteRotation(
+      let parentRotation = TranslateService.getAbsoluteRotation(
         <TranslateComponent>parent.getComponent(TranslateComponent));
       if(parentRotation != 270)
       {
@@ -33,8 +28,7 @@ namespace sczBase.tests
       }
 
       let child = TEFactory.createR(450);
-      game.addEntity(child);
-      let childRotation = translateService.getAbsoluteRotation(
+      let childRotation = TranslateService.getAbsoluteRotation(
         <TranslateComponent>child.getComponent(TranslateComponent));
       if(childRotation != 90)
       {
@@ -46,14 +40,9 @@ namespace sczBase.tests
 
     public static canGetCascadedRotation(): void
     {
-      let game = new sczCore.Game();
-      let translateService = new TranslateService(game);
-
       let parent = TEFactory.createR(109);
-      game.addEntity(parent);
-      let child = TEFactory.createR(-56, parent.getId());
-      game.addEntity(child);
-      let rotation = translateService.getAbsoluteRotation(
+      let child = TEFactory.createR(-56, parent);
+      let rotation = TranslateService.getAbsoluteRotation(
         <TranslateComponent>child.getComponent(TranslateComponent));
         if(rotation != 53)
       {
@@ -65,16 +54,13 @@ namespace sczBase.tests
 
     public static canGetInvertedRotation(): void
     {
-      let game = new sczCore.Game();
-      let translateService = new TranslateService(game);
-
       let entity = TEFactory.createR(60);
       let translate =
         <TranslateComponent>entity.getComponent(TranslateComponent)
 
-      translate.sizeX = 1;
-      translate.sizeY = 1;
-      let rotation = translateService.getAbsoluteRotation(translate);
+      translate.sizeFactorX = 1;
+      translate.sizeFactorY = 1;
+      let rotation = TranslateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
         throw new Error(
@@ -82,9 +68,9 @@ namespace sczBase.tests
             `[${rotation}° != 60°]`);
       }
 
-      translate.sizeX = -1;
-      translate.sizeY =  1;
-      rotation = translateService.getAbsoluteRotation(translate);
+      translate.sizeFactorX = -1;
+      translate.sizeFactorY =  1;
+      rotation = TranslateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
         throw new Error(
@@ -92,9 +78,9 @@ namespace sczBase.tests
             `[${rotation}° != 60°]`);
       }
 
-      translate.sizeX =  1;
-      translate.sizeY = -1;
-      rotation = translateService.getAbsoluteRotation(translate);
+      translate.sizeFactorX =  1;
+      translate.sizeFactorY = -1;
+      rotation = TranslateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
         throw new Error(
@@ -102,9 +88,9 @@ namespace sczBase.tests
             `[${rotation}° != 60°]`);
       }
 
-      translate.sizeX = -1;
-      translate.sizeY = -1;
-      rotation = translateService.getAbsoluteRotation(translate);
+      translate.sizeFactorX = -1;
+      translate.sizeFactorY = -1;
+      rotation = TranslateService.getAbsoluteRotation(translate);
       if(Math.fround(rotation) != 60)
       {
         throw new Error(
@@ -115,22 +101,18 @@ namespace sczBase.tests
 
     public static canGetAbsoluteRotation()
     {
-      let game = new sczCore.Game();
-      let translateService = new TranslateService(game);
-
       let parent = TEFactory.createR(45);
-      game.addEntity(parent);
-      let child = TEFactory.createR(15, parent.getId());
+      let child = TEFactory.createR(15, parent);
       let parentTranslate =
         <TranslateComponent>parent.getComponent(TranslateComponent)
       let childTranslate =
         <TranslateComponent>child.getComponent(TranslateComponent)
 
-      parentTranslate.sizeX = -1;
-      parentTranslate.sizeY =  1;
+      parentTranslate.sizeFactorX = -1;
+      parentTranslate.sizeFactorY =  1;
       parent.updateComponent(parentTranslate)
 
-      let childRotation = translateService.getAbsoluteRotation(childTranslate);
+      let childRotation = TranslateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 60)
       {
         throw new Error(
@@ -139,7 +121,7 @@ namespace sczBase.tests
       }
 
       childTranslate.rotation = -15;
-      childRotation = translateService.getAbsoluteRotation(childTranslate);
+      childRotation = TranslateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 30)
       {
         throw new Error(
@@ -147,11 +129,11 @@ namespace sczBase.tests
             `rotation not equal [${childRotation}° != 150°]`);
       }
 
-      parentTranslate.sizeX =  1;
-      parentTranslate.sizeY = -1;
+      parentTranslate.sizeFactorX =  1;
+      parentTranslate.sizeFactorY = -1;
       parent.updateComponent(parentTranslate)
 
-      childRotation = translateService.getAbsoluteRotation(childTranslate);
+      childRotation = TranslateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 30)
       {
         throw new Error(
@@ -160,7 +142,7 @@ namespace sczBase.tests
       }
 
       childTranslate.rotation = 15;
-      childRotation = translateService.getAbsoluteRotation(childTranslate);
+      childRotation = TranslateService.getAbsoluteRotation(childTranslate);
       if(Math.fround(childRotation) != 60)
       {
         throw new Error(
@@ -177,7 +159,7 @@ namespace sczBase.tests
       position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0},
       factor: {x: number, y: number} = {x: 1, y: 1},
       rotation: number = 0,
-      parentId: number = -1
+      parent: sczCore.Entity = null
     ) : sczCore.Entity
     {
       let entity = new sczCore.Entity(this.id++);
@@ -188,10 +170,10 @@ namespace sczBase.tests
 
       translate.rotation = rotation;
 
-      translate.sizeX = factor.x;
-      translate.sizeY = factor.y;
+      translate.sizeFactorX = factor.x;
+      translate.sizeFactorY = factor.y;
 
-      translate.parentId = parentId;
+      translate.parentEntity = parent;
 
       entity.addComponent(translate);
 
@@ -200,7 +182,7 @@ namespace sczBase.tests
 
     public static createF(
       factor: {x: number, y: number},
-      parent: number = -1
+      parent: sczCore.Entity = null
     ) : sczCore.Entity
     {
       return this.create(
@@ -212,7 +194,7 @@ namespace sczBase.tests
 
     public static createR(
       rotation: number,
-      parent: number = -1,
+      parent: sczCore.Entity = null,
       factor: {x: number, y: number} = {x: 1, y: 1}
     ) : sczCore.Entity
     {
